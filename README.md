@@ -186,7 +186,7 @@ Sources/MacBreak/
 Resources/Info.plist    Bundle metadata; LSUIElement keeps it off the Dock
 launchd/                Launch agent template
 scripts/                build.sh, install.sh, uninstall.sh, bootstrap.sh
-site/                   One-page explainer, deployed to Vercel
+site/                   One-page explainer, deployed to macbreak.vercel.app
 openspec/specs/         Behaviour specifications
 Makefile                build · install · uninstall · demo-eye · demo-walk · spec
 ```
