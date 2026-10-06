@@ -1,276 +1,5 @@
 import Cocoa
 
-// MARK: - Constants
-
-enum Const {
-    static let agentLabel = "com.user.macbreak"
-    static let bundleID = "com.user.macbreak"
-    /// Posted by a second launch (Spotlight) to tell the running copy to show preferences.
-    static let showPrefsNotification = Notification.Name("com.user.macbreak.showPreferences")
-    /// How often the overlay re-asserts itself over other apps while visible.
-    static let raiseInterval: TimeInterval = 0.7
-}
-
-enum Defaults {
-    static let lookAwayIntervalMinutes = 30
-    static let lookAwayDurationSeconds = 30
-    static let walkIntervalMinutes = 120
-    static let walkDurationMinutes = 10
-    static let snoozeMinutes = 10
-    static let lockResetMinutes = 5
-}
-
-// MARK: - Break kinds
-
-enum BreakKind {
-    case lookAway
-    case walk
-
-    var heading: String {
-        switch self {
-        case .lookAway: return "LOOK AWAY"
-        case .walk:     return "TIME FOR A WALK"
-        }
-    }
-
-    var prompts: [String] {
-        switch self {
-        case .lookAway:
-            return [
-                "Focus on something 20 feet away",
-                "Look out of the nearest window",
-                "Let your eyes rest on the far wall",
-                "Blink slowly, then look into the distance"
-            ]
-        case .walk:
-            return [
-                "Stand up and walk it off",
-                "Take a lap — stairs count",
-                "Go refill your water, the long way",
-                "Step outside for a few minutes"
-            ]
-        }
-    }
-
-    var hint: String {
-        switch self {
-        case .lookAway: return "Unclench your jaw · Drop your shoulders · Breathe"
-        case .walk:     return "Move your legs · Roll your shoulders · Get some air"
-        }
-    }
-
-    var accent: NSColor {
-        switch self {
-        case .lookAway: return NSColor(calibratedRed: 0.42, green: 0.85, blue: 0.72, alpha: 1.0)
-        case .walk:     return NSColor(calibratedRed: 0.98, green: 0.72, blue: 0.35, alpha: 1.0)
-        }
-    }
-
-    var glyph: String {
-        switch self {
-        case .lookAway: return "☕"
-        case .walk:     return "🚶"
-        }
-    }
-
-    /// How long the overlay holds the screen before "Done" unlocks.
-    var duration: TimeInterval {
-        switch self {
-        case .lookAway: return Prefs.lookAwayDuration
-        case .walk:     return Prefs.walkDuration
-        }
-    }
-}
-
-// MARK: - Preferences
-
-/// Thin UserDefaults wrapper. Human units on the surface, seconds for the timers.
-enum Prefs {
-    private static let lookAwayIntervalKey = "macbreak.lookAwayIntervalMinutes"
-    private static let lookAwayDurationKey = "macbreak.lookAwayDurationSeconds"
-    private static let walkIntervalKey = "macbreak.walkIntervalMinutes"
-    private static let walkDurationKey = "macbreak.walkDurationMinutes"
-    private static let snoozeKey = "macbreak.snoozeMinutes"
-    private static let lockResetKey = "macbreak.lockResetMinutes"
-
-    private static func read(_ key: String, fallback: Int) -> Int {
-        let stored = UserDefaults.standard.integer(forKey: key)
-        return stored > 0 ? stored : fallback
-    }
-
-    private static func write(_ key: String, _ value: Int) {
-        UserDefaults.standard.set(max(1, value), forKey: key)
-    }
-
-    static var lookAwayIntervalMinutes: Int {
-        get { read(lookAwayIntervalKey, fallback: Defaults.lookAwayIntervalMinutes) }
-        set { write(lookAwayIntervalKey, newValue) }
-    }
-
-    static var lookAwayDurationSeconds: Int {
-        get { read(lookAwayDurationKey, fallback: Defaults.lookAwayDurationSeconds) }
-        set { write(lookAwayDurationKey, newValue) }
-    }
-
-    static var walkIntervalMinutes: Int {
-        get { read(walkIntervalKey, fallback: Defaults.walkIntervalMinutes) }
-        set { write(walkIntervalKey, newValue) }
-    }
-
-    static var walkDurationMinutes: Int {
-        get { read(walkDurationKey, fallback: Defaults.walkDurationMinutes) }
-        set { write(walkDurationKey, newValue) }
-    }
-
-    static var snoozeMinutes: Int {
-        get { read(snoozeKey, fallback: Defaults.snoozeMinutes) }
-        set { write(snoozeKey, newValue) }
-    }
-
-    static var lockResetMinutes: Int {
-        get { read(lockResetKey, fallback: Defaults.lockResetMinutes) }
-        set { write(lockResetKey, newValue) }
-    }
-
-    /// Testing hooks, so the overlays can be demonstrated without waiting.
-    private static func envSeconds(_ name: String) -> TimeInterval? {
-        guard let raw = ProcessInfo.processInfo.environment[name],
-              let seconds = Double(raw), seconds > 0 else { return nil }
-        return seconds
-    }
-
-    static var lookAwayInterval: TimeInterval {
-        envSeconds("MACBREAK_BREAK_SECONDS") ?? TimeInterval(lookAwayIntervalMinutes * 60)
-    }
-
-    static var walkInterval: TimeInterval {
-        envSeconds("MACBREAK_WALK_SECONDS") ?? TimeInterval(walkIntervalMinutes * 60)
-    }
-
-    static var lookAwayDuration: TimeInterval {
-        envSeconds("MACBREAK_DURATION_SECONDS") ?? TimeInterval(lookAwayDurationSeconds)
-    }
-
-    static var walkDuration: TimeInterval {
-        envSeconds("MACBREAK_DURATION_SECONDS") ?? TimeInterval(walkDurationMinutes * 60)
-    }
-
-    static var snoozeInterval: TimeInterval {
-        envSeconds("MACBREAK_BREAK_SECONDS") ?? TimeInterval(snoozeMinutes * 60)
-    }
-
-    static var lockResetThreshold: TimeInterval {
-        envSeconds("MACBREAK_LOCK_RESET_SECONDS") ?? TimeInterval(lockResetMinutes * 60)
-    }
-}
-
-// MARK: - Logging
-
-/// launchd redirects stdout to /tmp/macbreak.out.log, which is the only way to
-/// see what a Dock-less background app is doing.
-func log(_ message: String) {
-    let stamp = ISO8601DateFormatter().string(from: Date())
-    print("[\(stamp)] \(message)")
-    fflush(stdout)
-}
-
-// MARK: - Clock formatting
-
-enum Clock {
-    /// mm:ss, or h:mm:ss once an hour or more remains.
-    static func format(_ seconds: Int) -> String {
-        let value = max(0, seconds)
-        if value >= 3600 {
-            return String(format: "%d:%02d:%02d", value / 3600, (value % 3600) / 60, value % 60)
-        }
-        return String(format: "%02d:%02d", value / 60, value % 60)
-    }
-}
-
-// MARK: - Launch agent management
-
-/// Installs/removes the launchd agent that starts MacBreak at login.
-enum LaunchAgent {
-    static var plistURL: URL {
-        FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Library/LaunchAgents/\(Const.agentLabel).plist")
-    }
-
-    static var isInstalled: Bool {
-        FileManager.default.fileExists(atPath: plistURL.path)
-    }
-
-    /// True when this process was spawned by launchd rather than a terminal.
-    static var isManagedByLaunchd: Bool {
-        ProcessInfo.processInfo.environment["XPC_SERVICE_NAME"]?.contains(Const.agentLabel) ?? false
-    }
-
-    static func install() {
-        guard let executable = Bundle.main.executablePath else { return }
-        let plist: [String: Any] = [
-            "Label": Const.agentLabel,
-            "ProgramArguments": [executable],
-            "RunAtLoad": true,
-            "KeepAlive": true,
-            "ProcessType": "Interactive",
-            "StandardOutPath": "/tmp/macbreak.out.log",
-            "StandardErrorPath": "/tmp/macbreak.err.log"
-        ]
-        let directory = plistURL.deletingLastPathComponent()
-        try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        guard let data = try? PropertyListSerialization.data(fromPropertyList: plist,
-                                                             format: .xml,
-                                                             options: 0) else { return }
-        try? data.write(to: plistURL)
-        // Already-running instance keeps running; this only registers it for next login.
-        run("/bin/launchctl", ["bootstrap", "gui/\(getuid())", plistURL.path])
-    }
-
-    static func uninstall() {
-        run("/bin/launchctl", ["bootout", "gui/\(getuid())/\(Const.agentLabel)"])
-        try? FileManager.default.removeItem(at: plistURL)
-    }
-
-    /// Boots the launchd job out, which also terminates this process.
-    static func bootout() {
-        run("/bin/launchctl", ["bootout", "gui/\(getuid())/\(Const.agentLabel)"])
-    }
-
-    private static func run(_ path: String, _ arguments: [String]) {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: path)
-        process.arguments = arguments
-        process.standardOutput = FileHandle.nullDevice
-        process.standardError = FileHandle.nullDevice
-        try? process.run()
-        process.waitUntilExit()
-    }
-}
-
-// MARK: - Overlay windows
-
-/// Borderless windows refuse key status by default; we need focus so the user
-/// cannot keep typing into whatever is underneath.
-final class OverlayWindow: NSWindow {
-    override var canBecomeKey: Bool { true }
-    override var canBecomeMain: Bool { true }
-}
-
-/// Swallows every key event so stray typing never reaches the app behind.
-final class OverlayContentView: NSView {
-    override var acceptsFirstResponder: Bool { true }
-    override func keyDown(with event: NSEvent) { NSSound.beep() }
-    override func performKeyEquivalent(with event: NSEvent) -> Bool { true }
-}
-
-/// The controls on one screen's overlay that need updating every second.
-private struct OverlayChrome {
-    let countdown: NSTextField
-    let done: NSButton
-}
-
-// MARK: - App
-
 final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     // Schedule
@@ -312,6 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         observeShowPreferences()
         resetAllSchedules()
         startTicking()
+        log("started (launchd: \(LaunchAgent.isManagedByLaunchd))")
 
         // Launched from Spotlight or Finder rather than by launchd: the user
         // went looking for the app, so show them something.
@@ -342,7 +72,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         openPreferences()
     }
 
-    // MARK: Scheduling
+    // MARK: - Scheduling
 
     private func resetAllSchedules() {
         lookAwayDue = Date().addingTimeInterval(Prefs.lookAwayInterval)
@@ -387,18 +117,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         refreshStatus(now: now)
     }
 
-    // MARK: Screen lock
+    // MARK: - Screen lock
 
     private func observeScreenLock() {
         let center = DistributedNotificationCenter.default()
-        center.addObserver(self,
-                           selector: #selector(screenLocked),
-                           name: NSNotification.Name("com.apple.screenIsLocked"),
-                           object: nil)
-        center.addObserver(self,
-                           selector: #selector(screenUnlocked),
-                           name: NSNotification.Name("com.apple.screenIsUnlocked"),
-                           object: nil)
+        center.addObserver(self, selector: #selector(screenLocked),
+                           name: NSNotification.Name("com.apple.screenIsLocked"), object: nil)
+        center.addObserver(self, selector: #selector(screenUnlocked),
+                           name: NSNotification.Name("com.apple.screenIsUnlocked"), object: nil)
     }
 
     @objc private func screenLocked() {
@@ -413,6 +139,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         // The user has already been away from the screen for long enough to
         // count as a break, so both clocks start over.
+        log("screen was locked for \(Int(away))s - resetting both schedules")
         if activeKind != nil { closeOverlay() }
         isPaused = false
         pauseItem.title = "Pause"
@@ -420,11 +147,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         refreshStatus(now: Date())
     }
 
-    // MARK: Menu bar
+    // MARK: - Menu bar
 
     private func buildStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        statusItem.button?.title = "☕ --:--"
+        statusItem.button?.title = BreakKind.lookAway.glyph
 
         let menu = NSMenu()
 
@@ -437,41 +164,35 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         menu.addItem(walkItem)
         menu.addItem(.separator())
 
-        menu.addItem(NSMenuItem(title: "Look Away Now",
-                                action: #selector(lookAwayNow),
-                                keyEquivalent: ""))
-        menu.addItem(NSMenuItem(title: "Take Walk Break Now",
-                                action: #selector(walkNow),
-                                keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "Look Away Now", action: #selector(lookAwayNow), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "Take Walk Break Now", action: #selector(walkNow), keyEquivalent: ""))
 
         pauseItem = NSMenuItem(title: "Pause", action: #selector(togglePause), keyEquivalent: "")
         menu.addItem(pauseItem)
         menu.addItem(.separator())
 
-        menu.addItem(NSMenuItem(title: "Preferences…",
-                                action: #selector(openPreferences),
-                                keyEquivalent: ","))
-        menu.addItem(NSMenuItem(title: "Quit MacBreak",
-                                action: #selector(quitApp),
-                                keyEquivalent: "q"))
+        menu.addItem(NSMenuItem(title: "Preferences…", action: #selector(openPreferences), keyEquivalent: ","))
+        menu.addItem(NSMenuItem(title: "Quit MacBreak", action: #selector(quitApp), keyEquivalent: "q"))
 
         for item in menu.items where item.action != nil { item.target = self }
         statusItem.menu = menu
     }
 
+    /// The menu bar is the user's workspace, not ours: show the glyph alone
+    /// until a break is close enough to be worth knowing about.
     private func refreshStatus(now: Date) {
         if let kind = activeKind, let endsAt = breakEndsAt {
             let remaining = Int(endsAt.timeIntervalSince(now).rounded())
             statusItem.button?.title = remaining > 0
                 ? "\(kind.glyph) \(Clock.format(remaining))"
-                : "\(kind.glyph) done"
+                : kind.glyph
             lookAwayItem.title = kind == .walk ? "Walk break in progress" : "Look-away break in progress"
             walkItem.title = remaining > 0 ? "Resting for \(Clock.format(remaining))" : "Press Done when ready"
             return
         }
 
         guard !isPaused else {
-            statusItem.button?.title = "☕ paused"
+            statusItem.button?.title = "\(BreakKind.lookAway.glyph) ⏸"
             lookAwayItem.title = "Paused"
             walkItem.title = "Paused"
             return
@@ -482,12 +203,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         lookAwayItem.title = "Look away in \(Clock.format(lookAwayLeft))"
         walkItem.title = "Walk in \(Clock.format(walkLeft))"
 
-        // The status item shows whichever break lands first.
-        if walkLeft < lookAwayLeft {
-            statusItem.button?.title = "\(BreakKind.walk.glyph) \(Clock.format(walkLeft))"
-        } else {
-            statusItem.button?.title = "\(BreakKind.lookAway.glyph) \(Clock.format(lookAwayLeft))"
-        }
+        // Whichever break lands first decides both the glyph and whether we speak up.
+        let nextIsWalk = walkLeft < lookAwayLeft
+        let soonest = min(lookAwayLeft, walkLeft)
+        let glyph = nextIsWalk ? BreakKind.walk.glyph : BreakKind.lookAway.glyph
+
+        statusItem.button?.title = TimeInterval(soonest) <= Prefs.statusTimerThreshold
+            ? "\(glyph) \(Clock.format(soonest))"
+            : glyph
     }
 
     private func remaining(until date: Date?, now: Date) -> Int {
@@ -495,7 +218,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         return max(0, Int(date.timeIntervalSince(now).rounded()))
     }
 
-    // MARK: Menu actions
+    // MARK: - Menu actions
 
     @objc private func lookAwayNow() { beginBreak(.lookAway) }
 
@@ -522,7 +245,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         NSApp.terminate(nil)
     }
 
-    // MARK: Break lifecycle
+    // MARK: - Break lifecycle
 
     private func beginBreak(_ kind: BreakKind) {
         guard activeKind == nil else { return }
@@ -530,6 +253,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         activeKind = kind
         breakEndsAt = Date().addingTimeInterval(kind.duration)
         doneUnlocked = false
+        log("break started: \(kind == .walk ? "walk" : "look-away")")
 
         let prompt = kind.prompts.randomElement() ?? kind.prompts[0]
 
@@ -542,13 +266,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 screen: screen
             )
             window.level = .screenSaver
-            window.isOpaque = true
-            window.backgroundColor = NSColor(calibratedWhite: 0.04, alpha: 1.0)
+            // Translucent rather than a black wall: the blurred desktop behind
+            // reads as a pause, not a crash.
+            window.isOpaque = false
+            window.backgroundColor = .clear
+            window.alphaValue = OverlayPalette.windowAlpha
             window.hasShadow = false
             window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary, .ignoresCycle]
             window.contentView = makeOverlayView(frame: NSRect(origin: .zero, size: screen.frame.size),
-                                                 kind: kind,
-                                                 prompt: prompt)
+                                                 kind: kind, prompt: prompt)
             window.setFrame(screen.frame, display: true)
             window.orderFrontRegardless()
             overlayWindows.append(window)
@@ -571,10 +297,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             chrome.countdown.stringValue = Clock.format(remaining)
             if remaining > 0 {
                 chrome.done.isEnabled = false
-                setButtonTitle(chrome.done, "Done in \(remaining)s", enabled: false)
+                style(chrome.done, title: "Done in \(remaining)s", enabled: false)
             } else if !doneUnlocked {
                 chrome.done.isEnabled = true
-                setButtonTitle(chrome.done, "Done", enabled: true)
+                chrome.done.layer?.backgroundColor = OverlayPalette.doneEnabled.cgColor
+                style(chrome.done, title: "Done", enabled: true)
             }
         }
 
@@ -638,54 +365,66 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         raiseTimer = nil
     }
 
-    // MARK: Overlay view
+    // MARK: - Overlay view
 
     private func makeOverlayView(frame: NSRect, kind: BreakKind, prompt: String) -> NSView {
         let root = OverlayContentView(frame: frame)
         root.wantsLayer = true
-        root.layer?.backgroundColor = NSColor(calibratedWhite: 0.04, alpha: 1.0).cgColor
+
+        // Blurred desktop, then a dark tint over it.
+        let blur = NSVisualEffectView(frame: frame)
+        blur.material = .hudWindow
+        blur.blendingMode = .behindWindow
+        blur.state = .active
+        blur.appearance = NSAppearance(named: .vibrantDark)
+        blur.autoresizingMask = [.width, .height]
+        root.addSubview(blur)
+
+        let tint = NSView(frame: frame)
+        tint.wantsLayer = true
+        tint.layer?.backgroundColor = OverlayPalette.tint.cgColor
+        tint.autoresizingMask = [.width, .height]
+        root.addSubview(tint)
 
         let centerX = frame.midX
         let centerY = frame.midY
 
-        let title = makeLabel(text: kind.heading, size: 64, weight: .bold,
+        let title = makeLabel(text: kind.heading, font: Typography.rounded(58, weight: .medium),
                               color: kind.accent, width: frame.width)
-        title.frame.origin = NSPoint(x: 0, y: centerY + 180)
+        title.frame.origin = NSPoint(x: 0, y: centerY + 170)
         root.addSubview(title)
 
-        let subtitle = makeLabel(text: prompt, size: 32, weight: .medium,
-                                 color: NSColor(calibratedWhite: 0.92, alpha: 1.0), width: frame.width)
-        subtitle.frame.origin = NSPoint(x: 0, y: centerY + 110)
+        let subtitle = makeLabel(text: prompt, font: Typography.rounded(30, weight: .light),
+                                 color: OverlayPalette.primaryText, width: frame.width)
+        subtitle.frame.origin = NSPoint(x: 0, y: centerY + 100)
         root.addSubview(subtitle)
 
-        let countdown = makeLabel(text: Clock.format(Int(kind.duration)), size: 110, weight: .thin,
-                                  color: NSColor(calibratedWhite: 1.0, alpha: 1.0), width: frame.width)
-        countdown.font = NSFont.monospacedDigitSystemFont(ofSize: 110, weight: .thin)
-        countdown.frame.origin = NSPoint(x: 0, y: centerY - 40)
+        let countdown = makeLabel(text: Clock.format(Int(kind.duration)),
+                                  font: Typography.roundedMonospacedDigits(104, weight: .ultraLight),
+                                  color: OverlayPalette.countdownText, width: frame.width)
+        countdown.frame.origin = NSPoint(x: 0, y: centerY - 50)
         root.addSubview(countdown)
 
-        let hint = makeLabel(text: kind.hint, size: 18, weight: .regular,
-                             color: NSColor(calibratedWhite: 0.55, alpha: 1.0), width: frame.width)
-        hint.frame.origin = NSPoint(x: 0, y: centerY - 90)
+        let hint = makeLabel(text: kind.hint, font: Typography.rounded(17, weight: .regular),
+                             color: OverlayPalette.secondaryText, width: frame.width)
+        hint.frame.origin = NSPoint(x: 0, y: centerY - 100)
         root.addSubview(hint)
 
         let buttonWidth: CGFloat = 240
-        let buttonHeight: CGFloat = 64
-        let gap: CGFloat = 32
-        let buttonY = centerY - 200
+        let buttonHeight: CGFloat = 62
+        let gap: CGFloat = 28
+        let buttonY = centerY - 210
 
-        let done = makeFlatButton(title: "Done in \(Int(kind.duration))s",
-                                  action: #selector(doneTapped),
-                                  background: NSColor(calibratedRed: 0.20, green: 0.70, blue: 0.52, alpha: 1.0))
+        let done = makeFlatButton(action: #selector(doneTapped),
+                                  background: OverlayPalette.doneEnabled.withAlphaComponent(0.35))
         done.isEnabled = false
-        setButtonTitle(done, "Done in \(Int(kind.duration))s", enabled: false)
+        style(done, title: "Done in \(Int(kind.duration))s", enabled: false)
         done.frame = NSRect(x: centerX - buttonWidth - gap / 2, y: buttonY,
                             width: buttonWidth, height: buttonHeight)
         root.addSubview(done)
 
-        let snooze = makeFlatButton(title: "Snooze (\(Prefs.snoozeMinutes) min)",
-                                    action: #selector(snoozeTapped),
-                                    background: NSColor(calibratedWhite: 0.22, alpha: 1.0))
+        let snooze = makeFlatButton(action: #selector(snoozeTapped), background: OverlayPalette.snooze)
+        style(snooze, title: "Snooze \(Prefs.snoozeMinutes) min", enabled: true)
         snooze.frame = NSRect(x: centerX + gap / 2, y: buttonY,
                               width: buttonWidth, height: buttonHeight)
         root.addSubview(snooze)
@@ -694,43 +433,43 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         return root
     }
 
-    private func makeLabel(text: String, size: CGFloat, weight: NSFont.Weight,
-                           color: NSColor, width: CGFloat) -> NSTextField {
+    private func makeLabel(text: String, font: NSFont, color: NSColor, width: CGFloat) -> NSTextField {
         let label = NSTextField(labelWithString: text)
-        label.font = NSFont.systemFont(ofSize: size, weight: weight)
+        label.font = font
         label.textColor = color
         label.alignment = .center
         label.isBezeled = false
         label.drawsBackground = false
         label.isEditable = false
         label.isSelectable = false
-        label.frame = NSRect(x: 0, y: 0, width: width, height: size * 1.4)
+        label.frame = NSRect(x: 0, y: 0, width: width, height: font.pointSize * 1.5)
         return label
     }
 
-    private func makeFlatButton(title: String, action: Selector, background: NSColor) -> NSButton {
-        let button = NSButton(title: title, target: self, action: action)
+    private func makeFlatButton(action: Selector, background: NSColor) -> NSButton {
+        let button = NSButton(title: "", target: self, action: action)
         button.isBordered = false
         button.wantsLayer = true
         button.layer?.backgroundColor = background.cgColor
-        button.layer?.cornerRadius = 12
-        setButtonTitle(button, title, enabled: true)
+        button.layer?.cornerRadius = 14
         return button
     }
 
     /// NSButton ignores `isEnabled` for attributed titles, so dim it ourselves.
-    private func setButtonTitle(_ button: NSButton, _ title: String, enabled: Bool) {
+    private func style(_ button: NSButton, title: String, enabled: Bool) {
         button.attributedTitle = NSAttributedString(
             string: title,
             attributes: [
-                .foregroundColor: enabled ? NSColor.white : NSColor(calibratedWhite: 1.0, alpha: 0.45),
-                .font: NSFont.systemFont(ofSize: 22, weight: .semibold)
+                .foregroundColor: enabled
+                    ? OverlayPalette.primaryText
+                    : NSColor(calibratedWhite: 1.0, alpha: 0.4),
+                .font: Typography.rounded(20, weight: .medium)
             ]
         )
-        button.layer?.opacity = enabled ? 1.0 : 0.55
+        button.layer?.opacity = enabled ? 1.0 : 0.6
     }
 
-    // MARK: Preferences window
+    // MARK: - Preferences window
 
     @objc private func openPreferences() {
         log("openPreferences")
@@ -743,7 +482,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
 
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 400, height: 320),
+            contentRect: NSRect(x: 0, y: 0, width: 420, height: 352),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
@@ -765,21 +504,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     private func makePrefsView() -> NSView {
-        let root = NSView(frame: NSRect(x: 0, y: 0, width: 400, height: 320))
-        var y: CGFloat = 272
+        let root = NSView(frame: NSRect(x: 0, y: 0, width: 420, height: 352))
+        var y: CGFloat = 304
 
         func addRow(key: String, label: String, unit: String) {
             let caption = NSTextField(labelWithString: label)
-            caption.frame = NSRect(x: 24, y: y + 2, width: 210, height: 20)
+            caption.frame = NSRect(x: 24, y: y + 2, width: 230, height: 20)
             root.addSubview(caption)
 
-            let input = NSTextField(frame: NSRect(x: 244, y: y, width: 64, height: 24))
+            let input = NSTextField(frame: NSRect(x: 262, y: y, width: 64, height: 24))
             input.alignment = .right
             root.addSubview(input)
             fields[key] = input
 
             let suffix = NSTextField(labelWithString: unit)
-            suffix.frame = NSRect(x: 316, y: y + 2, width: 60, height: 20)
+            suffix.frame = NSRect(x: 334, y: y + 2, width: 60, height: 20)
             root.addSubview(suffix)
 
             y -= 34
@@ -791,6 +530,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         addRow(key: "walkDuration", label: "Walk for", unit: "min")
         addRow(key: "snooze", label: "Snooze length", unit: "min")
         addRow(key: "lockReset", label: "Screen lock resets after", unit: "min")
+        addRow(key: "statusTimer", label: "Show menu bar timer under", unit: "min")
 
         let checkbox = NSButton(checkboxWithTitle: "Start at login", target: nil, action: nil)
         checkbox.frame = NSRect(x: 24, y: y - 4, width: 200, height: 22)
@@ -806,7 +546,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let save = NSButton(title: "Save", target: self, action: #selector(savePreferences))
         save.bezelStyle = .rounded
         save.keyEquivalent = "\r"
-        save.frame = NSRect(x: 280, y: 20, width: 96, height: 32)
+        save.frame = NSRect(x: 300, y: 20, width: 96, height: 32)
         root.addSubview(save)
 
         return root
@@ -819,6 +559,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         fields["walkDuration"]?.stringValue = String(Prefs.walkDurationMinutes)
         fields["snooze"]?.stringValue = String(Prefs.snoozeMinutes)
         fields["lockReset"]?.stringValue = String(Prefs.lockResetMinutes)
+        fields["statusTimer"]?.stringValue = String(Prefs.statusTimerMinutes)
         loginCheckbox?.state = LaunchAgent.isInstalled ? .on : .off
     }
 
@@ -834,6 +575,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         if let v = value("walkDuration") { Prefs.walkDurationMinutes = v }
         if let v = value("snooze") { Prefs.snoozeMinutes = v }
         if let v = value("lockReset") { Prefs.lockResetMinutes = v }
+        if let v = value("statusTimer") { Prefs.statusTimerMinutes = v }
 
         let wantsLogin = loginCheckbox?.state == .on
         if wantsLogin && !LaunchAgent.isInstalled {
@@ -853,28 +595,3 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         return false
     }
 }
-
-// MARK: - Entry point
-
-let app = NSApplication.shared
-
-// Spotlight re-launch while a copy is already running: hand the request to the
-// live instance and get out of the way, rather than running two schedulers.
-if Bundle.main.bundleIdentifier != nil {
-    let others = NSRunningApplication
-        .runningApplications(withBundleIdentifier: Const.bundleID)
-        .filter { $0.processIdentifier != ProcessInfo.processInfo.processIdentifier }
-    if !others.isEmpty {
-        DistributedNotificationCenter.default().postNotificationName(
-            Const.showPrefsNotification, object: nil, userInfo: nil, deliverImmediately: true
-        )
-        // Posting is asynchronous; exiting immediately can drop the message.
-        RunLoop.current.run(until: Date().addingTimeInterval(0.3))
-        exit(0)
-    }
-}
-
-let delegate = AppDelegate()
-app.delegate = delegate
-app.setActivationPolicy(.accessory)
-app.run()

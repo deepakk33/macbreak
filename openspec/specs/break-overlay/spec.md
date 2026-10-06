@@ -119,6 +119,36 @@ past the snooze window.
 - **WHEN** the user presses "Snooze (10 min)" on a walk break
 - **THEN** the walk is deferred 10 minutes and the next look-away is no later than that
 
+### Requirement: Calm Visual Treatment
+
+The overlay SHALL be translucent rather than a solid black wall: an
+`NSVisualEffectView` blurs the desktop behind a dark tint, so the screen reads
+as a pause rather than a crash. Type SHALL be set in SF Rounded with the
+countdown using rounded monospaced digits, and accent colours SHALL be muted
+rather than saturated.
+
+#### Scenario: Overlay appears
+
+- **WHEN** a break overlay is shown
+- **THEN** the desktop is visible but blurred behind a dark tint, and all type is rounded
+
+#### Scenario: Countdown ticks
+
+- **WHEN** the countdown moves from `00:10` to `00:09`
+- **THEN** the digits do not shift position
+
+### Requirement: Varied Prompts
+
+Each break kind SHALL draw from a pool of at least eight differently worded
+prompts, so the overlay does not become wallpaper the user stops reading. Eye
+prompts SHALL cover distance focus, eye rolling, palming, blinking and closing
+the eyes.
+
+#### Scenario: Repeated look-away breaks
+
+- **WHEN** several look-away breaks occur in a session
+- **THEN** the prompt varies between them, drawn at random from the eye-rest pool
+
 ### Requirement: Overlay Is Not Re-Entrant
 
 The system SHALL NOT present a second overlay while one is already visible.

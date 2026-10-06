@@ -18,18 +18,24 @@ window.
 - **WHEN** MacBreak is running
 - **THEN** it has no Dock tile and no Force Quit entry
 
-### Requirement: Status Item Shows The Nearer Break
+### Requirement: Status Item Stays Quiet Until A Break Is Close
 
-The status item title SHALL be the kind glyph followed by the time remaining
-until whichever break lands first, formatted `mm:ss`, or `h:mm:ss` once an hour
-or more remains, refreshed every second.
+The menu bar belongs to the user, so the status item SHALL show only the glyph
+of whichever break lands first while that break is further away than the
+configured threshold — 5 minutes by default. Within the threshold it SHALL
+append the remaining time, formatted `mm:ss`, refreshed every second.
 
-#### Scenario: Look-away is nearer
+#### Scenario: Next break is far off
 
-- **WHEN** a look-away is 14 minutes away and a walk is 1 hour away
-- **THEN** the status item reads "☕ 14:00"
+- **WHEN** the nearest break is 24 minutes away
+- **THEN** the status item reads "☕" with no countdown
 
-#### Scenario: Walk is nearer
+#### Scenario: Next break is within the threshold
+
+- **WHEN** the nearest break is 4 minutes 21 seconds away and the threshold is 5 minutes
+- **THEN** the status item reads "☕ 04:21"
+
+#### Scenario: A walk is the nearer break
 
 - **WHEN** a walk is 2 minutes away and a look-away is 25 minutes away
 - **THEN** the status item reads "🚶 02:00"
@@ -37,12 +43,12 @@ or more remains, refreshed every second.
 #### Scenario: Paused
 
 - **WHEN** MacBreak is paused
-- **THEN** the status item reads "☕ paused"
+- **THEN** the status item reads "☕ ⏸"
 
 #### Scenario: Break in progress
 
 - **WHEN** an overlay is showing with 18 seconds of rest left
-- **THEN** the status item shows that kind's glyph and "00:18"
+- **THEN** the status item shows that kind's glyph and "00:18" regardless of the threshold
 
 ### Requirement: Menu Lists Both Countdowns
 
@@ -71,16 +77,17 @@ whose title reflects state, "Preferences…" and "Quit MacBreak".
 
 ### Requirement: Preferences Panel
 
-The preferences window SHALL expose six numeric fields — look-away interval in
-minutes, look-away duration in seconds, walk interval in minutes, walk duration
-in minutes, snooze length in minutes, and screen-lock reset threshold in
-minutes — plus a "Start at login" checkbox and a Save button. Opening it SHALL
+The preferences window SHALL expose seven numeric fields — look-away interval
+in minutes, look-away duration in seconds, walk interval in minutes, walk
+duration in minutes, snooze length in minutes, screen-lock reset threshold in
+minutes, and the menu bar countdown threshold in minutes — plus a "Start at
+login" checkbox and a Save button. Opening it SHALL
 populate every control from current state.
 
 #### Scenario: Opening preferences
 
 - **WHEN** the user opens preferences
-- **THEN** all six fields show stored values and the checkbox reflects whether the launch agent is installed
+- **THEN** all seven fields show stored values and the checkbox reflects whether the launch agent is installed
 
 ### Requirement: Saving Restarts Both Countdowns
 

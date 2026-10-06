@@ -1,6 +1,5 @@
-# Build output - produced by ./build.sh
-MacBreak
-MacBreak.app/
+# Build output - produced by ./scripts/build.sh
+build/
 
 # Build leftovers
 *.o
