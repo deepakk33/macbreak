@@ -10,7 +10,9 @@
 <meta property="og:title" content="MacBreak — a break reminder for macOS you can't click away">
 <meta property="og:description" content="20-20-20 eye rests every 30 minutes, a walk every 2 hours. Native Swift menu bar app. Install with one brew command.">
 <meta property="og:url" content="https://macbreak.vercel.app/">
+<meta property="og:image" content="https://macbreak.vercel.app/assets/overlay-eye.jpg">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://macbreak.vercel.app/assets/overlay-eye.jpg">
 <meta name="theme-color" content="#0d0f14">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
 <style>
@@ -60,20 +62,12 @@
   .card p{margin:0;color:var(--muted);font-size:15.5px}
   .card.eye h3{color:var(--sage)} .card.walk h3{color:var(--sand)}
 
-  /* overlay mock */
-  .mock{background:linear-gradient(145deg,#171b24,#0f1218);border:1px solid var(--line);
-        border-radius:18px;padding:48px 28px;text-align:center;margin-top:8px}
-  .mock .m-title{font-size:27px;color:var(--sage);margin-bottom:8px}
-  .mock .m-prompt{font-size:18px;color:var(--fg);margin-bottom:22px}
-  .mock .m-count{font-family:var(--mono);font-size:clamp(44px,9vw,68px);font-weight:200;
-                 letter-spacing:.02em;margin-bottom:20px}
-  .mock .m-hint{color:var(--faint);font-size:13px;margin-bottom:26px}
-  .m-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-  .m-btn{padding:11px 20px;border-radius:11px;font-size:14.5px;font-weight:600}
-  .m-locked{background:rgba(143,207,189,.14);color:rgba(232,234,239,.42);
-            border:1px solid rgba(143,207,189,.2)}
-  .m-snooze{background:rgba(255,255,255,.07);color:var(--fg);border:1px solid var(--line)}
-  .note{color:var(--faint);font-size:13px;margin-top:14px;font-style:italic}
+  /* screenshots */
+  .shot{margin:0 0 26px}
+  .shot img{width:100%;height:auto;display:block;border-radius:16px;
+            border:1px solid var(--line);background:#0b0d12}
+  .shot figcaption{color:var(--faint);font-size:13.5px;margin-top:11px;text-align:center}
+  .shot figcaption b{color:var(--muted);font-weight:600}
 
   /* lists */
   ul.plain{list-style:none;padding:0;margin:0}
@@ -153,17 +147,19 @@
   <div class="wrap">
     <h2>Why it works when notifications don't</h2>
     <p class="lede">A banner you swat away without reading isn't a break. MacBreak covers every display and holds it.</p>
-    <div class="mock">
-      <div class="m-title">Rest your eyes</div>
-      <div class="m-prompt">Roll your eyes slowly — clockwise, then back</div>
-      <div class="m-count">00:23</div>
-      <div class="m-hint">Unclench your jaw · Drop your shoulders · Breathe out slowly</div>
-      <div class="m-btns">
-        <span class="m-btn m-locked">Done in 23s</span>
-        <span class="m-btn m-snooze">Snooze 10 min</span>
-      </div>
-      <p class="note">Done unlocks at 00:00. Not before.</p>
-    </div>
+    <figure class="shot">
+      <img src="/assets/overlay-eye.jpg" width="1600" height="800"
+           alt="MacBreak's eye-rest overlay filling the screen: the heading Rest your eyes, the prompt Look far, then near, then far again, a 00:40 countdown, and a greyed-out Done in 40s button beside an active Snooze 10 min button.">
+      <figcaption>The eye break. <b>Done</b> is greyed out — it unlocks at 00:00.</figcaption>
+    </figure>
+
+    <figure class="shot">
+      <img src="/assets/overlay-walk.jpg" width="1600" height="800" loading="lazy"
+           alt="MacBreak's walk overlay: the heading Time for a walk, the prompt Go refill your water the long way round, a 09:56 countdown, and a greyed-out Done in 9:56 button beside Snooze 10 min."
+           >
+      <figcaption>The walk break, ten minutes of it. Your desktop is still there, just out of reach.</figcaption>
+    </figure>
+
     <ul class="plain" style="margin-top:30px">
       <li><b>Done stays locked</b> until the countdown hits zero. The rest is the point, not the dismissal.</li>
       <li><b>It never auto-dismisses.</b> Walk away for the full ten minutes and it's still waiting — no missed break, no guessing whether you took it.</li>

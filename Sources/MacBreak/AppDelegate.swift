@@ -297,7 +297,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             chrome.countdown.stringValue = Clock.format(remaining)
             if remaining > 0 {
                 chrome.done.isEnabled = false
-                style(chrome.done, title: "Done in \(remaining)s", enabled: false)
+                style(chrome.done, title: "Done in \(Clock.compact(remaining))", enabled: false)
             } else if !doneUnlocked {
                 chrome.done.isEnabled = true
                 chrome.done.layer?.backgroundColor = OverlayPalette.doneEnabled.cgColor
@@ -418,7 +418,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let done = makeFlatButton(action: #selector(doneTapped),
                                   background: OverlayPalette.doneEnabled.withAlphaComponent(0.35))
         done.isEnabled = false
-        style(done, title: "Done in \(Int(kind.duration))s", enabled: false)
+        style(done, title: "Done in \(Clock.compact(Int(kind.duration)))", enabled: false)
         done.frame = NSRect(x: centerX - buttonWidth - gap / 2, y: buttonY,
                             width: buttonWidth, height: buttonHeight)
         root.addSubview(done)

@@ -88,6 +88,11 @@ clocks.
 - **WHEN** 12 seconds remain on a look-away break
 - **THEN** the button reads "Done in 12s" and does not respond to clicks
 
+#### Scenario: A long break counts down
+
+- **WHEN** 9 minutes 56 seconds remain on a walk break
+- **THEN** the button reads "Done in 9:56" rather than a raw second count
+
 #### Scenario: Countdown reaches zero
 
 - **WHEN** the countdown reaches `00:00`

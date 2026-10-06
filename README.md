@@ -14,6 +14,11 @@
   <img alt="license" src="https://img.shields.io/badge/license-MIT-black">
 </p>
 
+<p align="center">
+  <img src="site/assets/overlay-eye.jpg" width="820"
+       alt="MacBreak's eye-rest overlay: Rest your eyes, a 00:40 countdown, and a greyed-out Done in 40s button beside an active Snooze 10 min button.">
+</p>
+
 ---
 
 MacBreak is a free, open-source **eye strain and RSI break timer** for Mac. It is
