@@ -154,6 +154,23 @@ the eyes.
 - **WHEN** several look-away breaks occur in a session
 - **THEN** the prompt varies between them, drawn at random from the eye-rest pool
 
+### Requirement: Overlay Windows Are Not Released On Close
+
+Overlay windows SHALL set `isReleasedWhenClosed` to false. AppKit releases a
+closed window by default, and the app also holds each overlay in its own
+collection, so leaving the default in place double-releases the window and the
+next CoreAnimation flush dereferences freed memory.
+
+#### Scenario: Dismissing a break
+
+- **WHEN** the user presses Done and the overlay windows are closed
+- **THEN** the application keeps running and the menu bar item remains
+
+#### Scenario: Many breaks in one session
+
+- **WHEN** several breaks are shown and dismissed in succession
+- **THEN** the application survives every cycle
+
 ### Requirement: Overlay Is Not Re-Entrant
 
 The system SHALL NOT present a second overlay while one is already visible.

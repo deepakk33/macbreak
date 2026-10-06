@@ -266,6 +266,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 screen: screen
             )
             window.level = .screenSaver
+            // AppKit releases a closed window by default. We also hold it in
+            // overlayWindows, so leaving this on double-releases it and the
+            // next CoreAnimation flush segfaults.
+            window.isReleasedWhenClosed = false
             // Translucent rather than a black wall: the blurred desktop behind
             // reads as a pause, not a crash.
             window.isOpaque = false
