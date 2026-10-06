@@ -1,5 +1,6 @@
-# Compiled binary - built by ./build.sh
+# Build output - produced by ./build.sh
 MacBreak
+MacBreak.app/
 
 # Build leftovers
 *.o

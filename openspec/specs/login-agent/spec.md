@@ -55,3 +55,14 @@ process was started by launchd, so that quitting actually stops the app.
 
 - **WHEN** the user selects "Quit MacBreak" in an instance launched from a shell
 - **THEN** the process exits and no launchd job is touched
+
+### Requirement: Uninstall Removes The App Bundle Too
+
+The uninstall script SHALL remove the launch agent and the installed
+`MacBreak.app` from both `/Applications` and `~/Applications`, while leaving
+stored preferences in place.
+
+#### Scenario: Running the uninstall script
+
+- **WHEN** `./uninstall.sh` runs
+- **THEN** the agent and both bundle locations are removed and preferences in the `com.user.macbreak` domain survive

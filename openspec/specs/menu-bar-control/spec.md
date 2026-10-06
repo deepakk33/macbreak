@@ -2,30 +2,37 @@
 
 ## Purpose
 
-The only visible surface of MacBreak between breaks: a status item that shows
-when the next break lands and a preferences panel for changing the intervals.
+The only visible surface of MacBreak between breaks: a status item showing when
+the next rest lands, and a preferences panel for every interval.
 
 ## Requirements
 
 ### Requirement: Accessory Activation Policy
 
-The application SHALL run with `NSApplication.ActivationPolicy.accessory`, so it
-appears in neither the Dock nor the Force Quit window.
+The application SHALL run with `NSApplication.ActivationPolicy.accessory` and
+declare `LSUIElement`, so it appears in neither the Dock nor the Force Quit
+window.
 
 #### Scenario: App is running
 
 - **WHEN** MacBreak is running
 - **THEN** it has no Dock tile and no Force Quit entry
 
-### Requirement: Menu Bar Countdown
+### Requirement: Status Item Shows The Nearer Break
 
-The system SHALL show a status item whose title is a coffee glyph followed by the
-time remaining until the next break, formatted `mm:ss`, refreshed every second.
+The status item title SHALL be the kind glyph followed by the time remaining
+until whichever break lands first, formatted `mm:ss`, or `h:mm:ss` once an hour
+or more remains, refreshed every second.
 
-#### Scenario: 28 minutes 14 seconds remain
+#### Scenario: Look-away is nearer
 
-- **WHEN** 28 minutes and 14 seconds remain until the next break
-- **THEN** the status item reads "☕ 28:14"
+- **WHEN** a look-away is 14 minutes away and a walk is 1 hour away
+- **THEN** the status item reads "☕ 14:00"
+
+#### Scenario: Walk is nearer
+
+- **WHEN** a walk is 2 minutes away and a look-away is 25 minutes away
+- **THEN** the status item reads "🚶 02:00"
 
 #### Scenario: Paused
 
@@ -34,18 +41,28 @@ time remaining until the next break, formatted `mm:ss`, refreshed every second.
 
 #### Scenario: Break in progress
 
-- **WHEN** the overlay is showing
-- **THEN** the status item reads "☕ break"
+- **WHEN** an overlay is showing with 18 seconds of rest left
+- **THEN** the status item shows that kind's glyph and "00:18"
+
+### Requirement: Menu Lists Both Countdowns
+
+The menu SHALL show two disabled lines — time until the next look-away and time
+until the next walk — above the actions.
+
+#### Scenario: Opening the menu
+
+- **WHEN** the user opens the menu
+- **THEN** it reads "Look away in mm:ss" and "Walk in h:mm:ss"
 
 ### Requirement: Menu Actions
 
-The status item menu SHALL contain a disabled countdown line, "Take Break Now",
-a pause toggle whose title reflects state, "Preferences…" and "Quit MacBreak".
+The menu SHALL offer "Look Away Now", "Take Walk Break Now", a pause toggle
+whose title reflects state, "Preferences…" and "Quit MacBreak".
 
-#### Scenario: Take Break Now
+#### Scenario: Taking a walk break early
 
-- **WHEN** the user selects "Take Break Now"
-- **THEN** the overlay appears immediately
+- **WHEN** the user selects "Take Walk Break Now"
+- **THEN** the walk overlay appears immediately
 
 #### Scenario: Pause toggle title
 
@@ -54,35 +71,36 @@ a pause toggle whose title reflects state, "Preferences…" and "Quit MacBreak".
 
 ### Requirement: Preferences Panel
 
-The system SHALL provide a preferences window with a break interval field in
-minutes, a snooze length field in minutes, a "Start at login" checkbox and a
-Save button. Opening the panel SHALL populate every control from current state.
+The preferences window SHALL expose six numeric fields — look-away interval in
+minutes, look-away duration in seconds, walk interval in minutes, walk duration
+in minutes, snooze length in minutes, and screen-lock reset threshold in
+minutes — plus a "Start at login" checkbox and a Save button. Opening it SHALL
+populate every control from current state.
 
 #### Scenario: Opening preferences
 
-- **WHEN** the user selects "Preferences…"
-- **THEN** the fields show the stored intervals and the checkbox reflects whether the launch agent is installed
+- **WHEN** the user opens preferences
+- **THEN** all six fields show stored values and the checkbox reflects whether the launch agent is installed
 
-### Requirement: Saving Preferences Restarts The Countdown
+### Requirement: Saving Restarts Both Countdowns
 
-Saving SHALL persist values greater than zero, ignore invalid input, apply the
-login-at-startup choice, and reschedule the pending break using the new break
-interval unless the app is paused.
+Saving SHALL persist each value greater than zero, ignore invalid input, apply
+the login-at-startup choice, and restart both schedules unless the app is
+paused or a break is in progress.
 
-#### Scenario: Interval changed to 45 minutes
+#### Scenario: Walk interval changed to 90 minutes
 
-- **WHEN** the user enters 45 and presses Save
-- **THEN** 45 minutes is persisted and the countdown restarts from 45:00
+- **WHEN** the user enters 90 for the walk interval and presses Save
+- **THEN** 90 minutes is persisted and the walk countdown restarts from 1:30:00
 
 #### Scenario: Non-numeric input
 
-- **WHEN** the user enters "abc" and presses Save
-- **THEN** the stored interval is left unchanged
+- **WHEN** the user enters "abc" in a field and presses Save
+- **THEN** that stored value is left unchanged
 
 ### Requirement: Preferences Window Hides Rather Than Closing
 
-Closing the preferences window SHALL hide it and keep the instance alive, so
-reopening is immediate and state is preserved.
+Closing the preferences window SHALL hide it and keep the instance alive.
 
 #### Scenario: Close and reopen
 

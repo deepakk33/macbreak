@@ -2,8 +2,9 @@
 
 ## Purpose
 
-The full-screen blocker shown when a break is due. It has to be impossible to
-ignore, because a reminder that can be dismissed by reflex is not a break.
+The full-screen blocker shown when a break is due, in two flavours: a short
+look-away and a long walk. It has to be impossible to ignore, because a
+reminder that can be dismissed by reflex is not a break.
 
 ## Requirements
 
@@ -15,14 +16,13 @@ the full frame of every attached display.
 #### Scenario: Two displays attached
 
 - **WHEN** a break fires with two displays connected
-- **THEN** both displays are fully covered by an overlay window
+- **THEN** both displays are fully covered, each with its own countdown and buttons
 
 ### Requirement: Overlay Floats Above All Windows
 
 Overlay windows SHALL use `NSWindow.Level.screenSaver` and a collection
 behaviour of `canJoinAllSpaces`, `fullScreenAuxiliary`, `stationary` and
-`ignoresCycle`, so the overlay stays visible across Spaces and over full-screen
-apps.
+`ignoresCycle`.
 
 #### Scenario: Break fires while a full-screen app is frontmost
 
@@ -32,7 +32,7 @@ apps.
 ### Requirement: Overlay Holds Focus
 
 The overlay SHALL take key window status and re-assert itself roughly every 0.7
-seconds while visible, so that focus stolen by another app is reclaimed.
+seconds while visible.
 
 #### Scenario: Another app activates during a break
 
@@ -41,46 +41,89 @@ seconds while visible, so that focus stolen by another app is reclaimed.
 
 ### Requirement: Keystrokes Are Swallowed
 
-The overlay content view SHALL consume key events rather than forwarding them,
-so typing during a break cannot reach the application underneath.
+The overlay content view SHALL consume key events rather than forwarding them.
 
 #### Scenario: User keeps typing
 
 - **WHEN** the user types while the overlay is showing
 - **THEN** no characters reach the previously focused application
 
-### Requirement: Break Instruction Is Displayed
+### Requirement: Two Break Flavours
 
-The overlay SHALL show a heading, one randomly chosen stretch or eye-rest
-instruction, and a supporting hint line.
+The overlay SHALL render differently per break kind. A look-away break SHALL
+read "LOOK AWAY" in green with an eye-rest prompt; a walk break SHALL read
+"TIME FOR A WALK" in amber with a movement prompt. Each SHALL show one randomly
+chosen prompt and a supporting hint line.
 
-#### Scenario: Overlay appears
+#### Scenario: Look-away break
 
-- **WHEN** the overlay is shown
-- **THEN** it displays "TIME FOR A BREAK" and one prompt drawn from the prompt list
+- **WHEN** a look-away break is shown
+- **THEN** the heading is "LOOK AWAY" and the prompt comes from the eye-rest list
 
-### Requirement: Done And Snooze Controls
+#### Scenario: Walk break
 
-The overlay SHALL provide exactly two buttons. "Done" SHALL dismiss the overlay
-and schedule the next break at the full break interval. "Snooze" SHALL dismiss
-the overlay and schedule the next break at the snooze interval, and its title
-SHALL name the current snooze length in minutes.
+- **WHEN** a walk break is shown
+- **THEN** the heading is "TIME FOR A WALK" and the prompt comes from the movement list
 
-#### Scenario: User presses Done
+### Requirement: Rest Countdown
 
-- **WHEN** the user presses "Done"
-- **THEN** the overlay closes and the next break is scheduled one full interval later
+The overlay SHALL display a large monospaced countdown of the rest remaining,
+starting at the break duration — 30 seconds for a look-away, 10 minutes for a
+walk by default — and ticking down once per second to `00:00`.
 
-#### Scenario: User presses Snooze
+#### Scenario: Look-away countdown
 
-- **WHEN** the user presses "Snooze (10 min)" with a 10 minute snooze configured
-- **THEN** the overlay closes and the next break is scheduled 600 seconds later
+- **WHEN** a look-away break starts with a 30 second duration
+- **THEN** the overlay shows `00:30` and counts down one second at a time
+
+### Requirement: Done Unlocks Only When The Rest Is Over
+
+"Done" SHALL be disabled and dimmed while the countdown runs, titled
+"Done in Ns", and SHALL become enabled and titled "Done" when the countdown
+reaches zero. Pressing it SHALL dismiss the overlay and restart the relevant
+clocks.
+
+#### Scenario: Pressing Done early is not possible
+
+- **WHEN** 12 seconds remain on a look-away break
+- **THEN** the button reads "Done in 12s" and does not respond to clicks
+
+#### Scenario: Countdown reaches zero
+
+- **WHEN** the countdown reaches `00:00`
+- **THEN** the button reads "Done" and dismisses the overlay when pressed
+
+### Requirement: Overlay Does Not Auto-Dismiss
+
+The overlay SHALL remain on screen after the countdown ends until the user
+acknowledges it, so a break taken away from the desk is not missed on return.
+
+#### Scenario: User walks away for the whole break
+
+- **WHEN** the countdown ends with no one at the machine
+- **THEN** the overlay is still showing, with Done enabled, when the user returns
+
+### Requirement: Snooze Is Always Available
+
+"Snooze" SHALL stay enabled throughout, name the configured snooze length, and
+defer the break by that length. Snoozing a walk SHALL NOT let the eyes drift
+past the snooze window.
+
+#### Scenario: Snoozing a look-away
+
+- **WHEN** the user presses "Snooze (10 min)" on a look-away break
+- **THEN** the overlay closes and the next look-away is due in 10 minutes
+
+#### Scenario: Snoozing a walk
+
+- **WHEN** the user presses "Snooze (10 min)" on a walk break
+- **THEN** the walk is deferred 10 minutes and the next look-away is no later than that
 
 ### Requirement: Overlay Is Not Re-Entrant
 
 The system SHALL NOT present a second overlay while one is already visible.
 
-#### Scenario: Take Break Now during a break
+#### Scenario: Menu action during a break
 
-- **WHEN** "Take Break Now" is invoked while the overlay is already showing
+- **WHEN** "Look Away Now" is invoked while an overlay is already showing
 - **THEN** nothing changes and no duplicate window is created
