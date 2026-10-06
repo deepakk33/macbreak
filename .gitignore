@@ -1,0 +1,9 @@
+# Compiled binary - built by ./build.sh
+MacBreak
+
+# Build leftovers
+*.o
+*.dSYM/
+
+# macOS
+.DS_Store

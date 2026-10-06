@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.user.macbreak</string>
+
+    <!-- install.sh replaces this placeholder with the absolute path of the built binary. -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>__MACBREAK_EXECUTABLE__</string>
+    </array>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>ProcessType</key>
+    <string>Interactive</string>
+
+    <key>StandardOutPath</key>
+    <string>/tmp/macbreak.out.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/tmp/macbreak.err.log</string>
+</dict>
+</plist>
