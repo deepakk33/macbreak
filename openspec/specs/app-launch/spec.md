@@ -71,3 +71,35 @@ deliberately went looking for the app.
 
 - **WHEN** the unbundled binary is run from a shell for a demo
 - **THEN** no preferences window is shown
+
+### Requirement: Reopen Events Show Preferences
+
+Because LaunchServices sends a reopen event to a running application rather
+than starting a second process, the application SHALL implement
+`applicationShouldHandleReopen` and show the preferences window in response.
+
+#### Scenario: Opening from Spotlight while the agent copy runs
+
+- **WHEN** the user opens MacBreak from Spotlight, the Dock or Finder while it is already running
+- **THEN** the running copy receives a reopen event and shows its preferences window
+
+### Requirement: Preferences Window Follows The Active Space
+
+The preferences window SHALL use a `moveToActiveSpace` collection behaviour and
+be ordered front regardless of activation state, so an app with no Dock tile
+cannot open its window out of sight.
+
+#### Scenario: Opened from a different Space
+
+- **WHEN** preferences are requested while the user is on a Space other than the one the window was created on
+- **THEN** the window appears on the user's current Space
+
+### Requirement: Diagnostic Log
+
+The application SHALL log launch and preferences events to standard output,
+which launchd redirects to `/tmp/macbreak.out.log`.
+
+#### Scenario: Inspecting why a launch did nothing
+
+- **WHEN** the user opens the app and checks the log
+- **THEN** it records that a reopen event was received and preferences were shown

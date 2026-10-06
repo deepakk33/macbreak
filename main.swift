@@ -164,6 +164,16 @@ enum Prefs {
     }
 }
 
+// MARK: - Logging
+
+/// launchd redirects stdout to /tmp/macbreak.out.log, which is the only way to
+/// see what a Dock-less background app is doing.
+func log(_ message: String) {
+    let stamp = ISO8601DateFormatter().string(from: Date())
+    print("[\(stamp)] \(message)")
+    fflush(stdout)
+}
+
 // MARK: - Clock formatting
 
 enum Clock {
@@ -308,6 +318,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         if Bundle.main.bundleIdentifier != nil && !LaunchAgent.isManagedByLaunchd {
             openPreferences()
         }
+    }
+
+    /// LaunchServices does not start a second process when the app is already
+    /// running; it sends a reopen event to the live copy instead. Without this
+    /// the Spotlight launch is silently dropped.
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool {
+        log("reopen event received - showing preferences")
+        openPreferences()
+        return true
     }
 
     private func observeShowPreferences() {
@@ -714,10 +733,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     // MARK: Preferences window
 
     @objc private func openPreferences() {
+        log("openPreferences")
         if let window = prefsWindow {
             loadPrefsIntoFields()
             NSApp.activate(ignoringOtherApps: true)
             window.makeKeyAndOrderFront(nil)
+            window.orderFrontRegardless()
             return
         }
 
@@ -730,6 +751,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         window.title = "MacBreak Preferences"
         window.isReleasedWhenClosed = false
         window.delegate = self
+        // An accessory app's window must be pulled onto whichever Space the user
+        // is looking at, or it opens out of sight.
+        window.collectionBehavior = [.moveToActiveSpace]
         window.center()
         window.contentView = makePrefsView()
         prefsWindow = window
@@ -737,6 +761,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         loadPrefsIntoFields()
         NSApp.activate(ignoringOtherApps: true)
         window.makeKeyAndOrderFront(nil)
+        window.orderFrontRegardless()
     }
 
     private func makePrefsView() -> NSView {
@@ -843,6 +868,8 @@ if Bundle.main.bundleIdentifier != nil {
         DistributedNotificationCenter.default().postNotificationName(
             Const.showPrefsNotification, object: nil, userInfo: nil, deliverImmediately: true
         )
+        // Posting is asynchronous; exiting immediately can drop the message.
+        RunLoop.current.run(until: Date().addingTimeInterval(0.3))
         exit(0)
     }
 }
