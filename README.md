@@ -2,7 +2,8 @@
 
 <p align="center">
   <b>A break reminder for macOS that you can't click away.</b><br>
-  Rest your eyes every 30 minutes. Get out of your chair every 2 hours.
+  Rest your eyes every 30 minutes. Get out of your chair every 2 hours.<br>
+  <a href="https://macbreak.vercel.app">macbreak.vercel.app</a>
 </p>
 
 <p align="center">
@@ -94,15 +95,34 @@ numbers.
 
 ## Install
 
+### Homebrew
+
+```bash
+brew install --cask deepakk33/tap/macbreak
+open -a MacBreak     # then tick "Start at login"
+```
+
+### One line, built from source
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/deepakk33/macbreak/main/scripts/bootstrap.sh | bash
+```
+
+Clones into `~/.local/share/macbreak`, compiles, and registers the login agent.
+Nothing pre-built is downloaded, so there is no Gatekeeper prompt and nothing to
+trust that you cannot read first.
+
+### From a clone
+
 ```bash
 git clone https://github.com/deepakk33/macbreak.git
 cd macbreak
 make install
 ```
 
-That compiles the sources, assembles `MacBreak.app`, installs it to
-`/Applications` (or `~/Applications`), registers a launchd user agent and starts
-it. It runs at every login after that.
+All three compile the sources (or, with Homebrew, fetch a release build), put
+`MacBreak.app` in `/Applications`, and leave you with a menu bar app that starts
+at login.
 
 **Requirements:** macOS 13+ and Swift tooling. `xcode-select --install` is
 enough — the full Xcode app is not needed, and there is no `.xcodeproj` here.
@@ -142,8 +162,11 @@ Five environment variables shorten the schedule:
 ## Uninstall
 
 ```bash
-make uninstall                      # stops it, removes the agent and the app
-defaults delete com.user.macbreak   # optional: forget the saved intervals
+brew uninstall --cask macbreak        # if installed with Homebrew
+brew uninstall --zap --cask macbreak  # ...and forget the saved intervals
+
+make uninstall                        # if installed from source
+defaults delete com.user.macbreak     # optional: forget the saved intervals
 ```
 
 ## Repository layout
@@ -162,7 +185,8 @@ Sources/MacBreak/
 
 Resources/Info.plist    Bundle metadata; LSUIElement keeps it off the Dock
 launchd/                Launch agent template
-scripts/                build.sh, install.sh, uninstall.sh
+scripts/                build.sh, install.sh, uninstall.sh, bootstrap.sh
+site/                   One-page explainer, deployed to Vercel
 openspec/specs/         Behaviour specifications
 Makefile                build · install · uninstall · demo-eye · demo-walk · spec
 ```
@@ -206,8 +230,8 @@ with its own countdown and buttons.
 
 **Does it send anything anywhere?** No. There is no network code in this repo.
 
-**Is it notarised / code-signed?** No. First launch from Finder may need a
-right-click → Open.
+**Is it notarised / code-signed?** No. The Homebrew cask clears the download
+quarantine for you; building from source avoids the question entirely.
 
 **Can I just use it for eyes, not walks?** Set the walk interval very high in
 Preferences.

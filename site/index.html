@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MacBreak — a break reminder for macOS you can't click away</title>
+<meta name="description" content="Free, open-source break timer for Mac. A 30-second eye rest every 30 minutes, a 10-minute walk every 2 hours. The Done button stays locked until you've actually rested. Native Swift, no Electron, no account, no telemetry.">
+<link rel="canonical" href="https://macbreak.vercel.app/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MacBreak — a break reminder for macOS you can't click away">
+<meta property="og:description" content="20-20-20 eye rests every 30 minutes, a walk every 2 hours. Native Swift menu bar app. Install with one brew command.">
+<meta property="og:url" content="https://macbreak.vercel.app/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0d0f14">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
+<style>
+  :root{
+    --bg:#0d0f14; --bg-soft:#13161d; --line:#222733;
+    --fg:#e8eaef; --muted:#8e97a8; --faint:#5c6476;
+    --sage:#8fcfbd; --sand:#e8c28c; --radius:14px;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Rounded","Segoe UI",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+       line-height:1.65;-webkit-font-smoothing:antialiased;font-size:17px}
+  .wrap{max-width:860px;margin:0 auto;padding:0 24px}
+  a{color:var(--sage)}
+  h1,h2,h3{line-height:1.2;letter-spacing:-.02em;font-weight:600}
+  code,pre{font-family:var(--mono);font-size:14px}
+
+  /* hero */
+  header{padding:96px 0 72px;text-align:center;
+         background:radial-gradient(900px 420px at 50% -12%,rgba(143,207,189,.10),transparent 70%)}
+  .glyph{font-size:50px;line-height:1;margin-bottom:22px}
+  h1{font-size:clamp(34px,6.2vw,56px);margin:0 0 18px}
+  .tag{font-size:clamp(17px,2.4vw,21px);color:var(--muted);max-width:40ch;margin:0 auto 34px}
+  .tag b{color:var(--fg);font-weight:600}
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+  .btn{display:inline-block;padding:12px 22px;border-radius:11px;text-decoration:none;
+       font-weight:600;font-size:15px;border:1px solid transparent;transition:.15s}
+  .btn-primary{background:var(--sage);color:#0b1a16}
+  .btn-primary:hover{filter:brightness(1.08)}
+  .btn-ghost{border-color:var(--line);color:var(--fg)}
+  .btn-ghost:hover{border-color:var(--faint);background:var(--bg-soft)}
+  .sub{color:var(--faint);font-size:13.5px}
+
+  /* sections */
+  section{padding:60px 0;border-top:1px solid var(--line)}
+  h2{font-size:clamp(23px,3.4vw,30px);margin:0 0 10px}
+  .lede{color:var(--muted);margin:0 0 30px;max-width:62ch}
+
+  /* break cards */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+  .card .k{font-size:26px;margin-bottom:10px}
+  .card h3{margin:0 0 4px;font-size:19px}
+  .card .when{color:var(--faint);font-size:14px;font-family:var(--mono);margin-bottom:12px}
+  .card p{margin:0;color:var(--muted);font-size:15.5px}
+  .card.eye h3{color:var(--sage)} .card.walk h3{color:var(--sand)}
+
+  /* overlay mock */
+  .mock{background:linear-gradient(145deg,#171b24,#0f1218);border:1px solid var(--line);
+        border-radius:18px;padding:48px 28px;text-align:center;margin-top:8px}
+  .mock .m-title{font-size:27px;color:var(--sage);margin-bottom:8px}
+  .mock .m-prompt{font-size:18px;color:var(--fg);margin-bottom:22px}
+  .mock .m-count{font-family:var(--mono);font-size:clamp(44px,9vw,68px);font-weight:200;
+                 letter-spacing:.02em;margin-bottom:20px}
+  .mock .m-hint{color:var(--faint);font-size:13px;margin-bottom:26px}
+  .m-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .m-btn{padding:11px 20px;border-radius:11px;font-size:14.5px;font-weight:600}
+  .m-locked{background:rgba(143,207,189,.14);color:rgba(232,234,239,.42);
+            border:1px solid rgba(143,207,189,.2)}
+  .m-snooze{background:rgba(255,255,255,.07);color:var(--fg);border:1px solid var(--line)}
+  .note{color:var(--faint);font-size:13px;margin-top:14px;font-style:italic}
+
+  /* lists */
+  ul.plain{list-style:none;padding:0;margin:0}
+  ul.plain li{padding:13px 0;border-bottom:1px solid var(--line);color:var(--muted);font-size:15.5px}
+  ul.plain li:last-child{border-bottom:0}
+  ul.plain b{color:var(--fg);font-weight:600}
+
+  /* code */
+  pre{background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;
+      padding:16px 18px;overflow-x:auto;margin:0 0 14px}
+  pre .c{color:var(--faint)}
+  pre .p{color:var(--sage)}
+  .step{color:var(--faint);font-size:13.5px;text-transform:uppercase;
+        letter-spacing:.08em;margin:26px 0 9px;font-weight:600}
+
+  /* menubar strip */
+  .bar{display:flex;align-items:center;gap:14px;background:var(--bg-soft);
+       border:1px solid var(--line);border-radius:10px;padding:12px 16px;
+       font-family:var(--mono);font-size:14px;margin-bottom:10px;flex-wrap:wrap}
+  .bar .lbl{color:var(--faint);font-family:var(--sans);font-size:14px}
+
+  /* faq */
+  details{border-bottom:1px solid var(--line);padding:15px 0}
+  summary{cursor:pointer;font-weight:600;font-size:16px;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"+";color:var(--sage);margin-right:11px;font-weight:400}
+  details[open] summary::before{content:"–"}
+  details p{color:var(--muted);margin:11px 0 2px;font-size:15.5px}
+
+  footer{padding:46px 0 60px;border-top:1px solid var(--line);
+         color:var(--faint);font-size:14px;text-align:center}
+  footer a{color:var(--muted)}
+
+  @media(max-width:640px){
+    .cards{grid-template-columns:1fr}
+    header{padding:68px 0 54px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="glyph">☕</div>
+    <h1>The break reminder you<br>can't click away</h1>
+    <p class="tag">MacBreak takes the screen when it's time to rest, and <b>gives it back when you've actually rested</b>.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="#install">Install</a>
+      <a class="btn btn-ghost" href="https://github.com/deepakk33/macbreak">View source</a>
+    </div>
+    <p class="sub">macOS 13+ · Native Swift · MIT · No account, no telemetry</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Two breaks, because eyes and legs want different things</h2>
+    <p class="lede">Eye strain comes from hours of fixed focus. Stiffness comes from hours of not moving. One timer can't fix both, so MacBreak runs two.</p>
+    <div class="cards">
+      <div class="card eye">
+        <div class="k">👁️</div>
+        <h3>Rest your eyes</h3>
+        <div class="when">every 30 min · 30 seconds</div>
+        <p>The 20-20-20 rule, enforced. Ten different prompts — look 20 metres away, roll your eyes slowly, palm them in the dark — so you keep reading instead of tuning it out.</p>
+      </div>
+      <div class="card walk">
+        <div class="k">🚶</div>
+        <h3>Time for a walk</h3>
+        <div class="when">every 2 hours · 10 minutes</div>
+        <p>Long enough to actually leave the chair. Take a lap, refill your water the long way, go look at the sky. Finishing one resets the eye clock too.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Why it works when notifications don't</h2>
+    <p class="lede">A banner you swat away without reading isn't a break. MacBreak covers every display and holds it.</p>
+    <div class="mock">
+      <div class="m-title">Rest your eyes</div>
+      <div class="m-prompt">Roll your eyes slowly — clockwise, then back</div>
+      <div class="m-count">00:23</div>
+      <div class="m-hint">Unclench your jaw · Drop your shoulders · Breathe out slowly</div>
+      <div class="m-btns">
+        <span class="m-btn m-locked">Done in 23s</span>
+        <span class="m-btn m-snooze">Snooze 10 min</span>
+      </div>
+      <p class="note">Done unlocks at 00:00. Not before.</p>
+    </div>
+    <ul class="plain" style="margin-top:30px">
+      <li><b>Done stays locked</b> until the countdown hits zero. The rest is the point, not the dismissal.</li>
+      <li><b>It never auto-dismisses.</b> Walk away for the full ten minutes and it's still waiting — no missed break, no guessing whether you took it.</li>
+      <li><b>Every display, every Space</b>, above full-screen apps. It re-takes focus if another app grabs it, and swallows keystrokes so reflex typing goes nowhere.</li>
+      <li><b>Snooze is always one click away.</b> A nudge with teeth, not a kiosk lock.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>It knows when you've already rested</h2>
+    <p class="lede">Lock your screen for lunch and MacBreak notices. Come back after five minutes or more and both clocks restart — no eye break thirty seconds after you sit down. Shorter locks leave the countdown alone.</p>
+    <h2 style="margin-top:44px">And it stays out of your menu bar</h2>
+    <p class="lede">A timer ticking all day is one more thing pulling at your attention. MacBreak shows a glyph and nothing else until a break is close.</p>
+    <div class="bar"><span>☕</span><span class="lbl">more than 5 minutes away — quiet</span></div>
+    <div class="bar"><span>☕ 04:21</span><span class="lbl">under 5 minutes — now it speaks up</span></div>
+    <div class="bar"><span>🚶 01:58</span><span class="lbl">a walk is next</span></div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <h2>Install</h2>
+    <p class="lede">Two ways in. Both take about a minute.</p>
+
+    <div class="step">Homebrew</div>
+<pre><span class="p">brew</span> install --cask deepakk33/tap/macbreak
+<span class="p">open</span> -a MacBreak   <span class="c"># then tick "Start at login"</span></pre>
+
+    <div class="step">Or build from source</div>
+<pre><span class="p">curl</span> -fsSL https://raw.githubusercontent.com/deepakk33/macbreak/main/scripts/bootstrap.sh | bash</pre>
+    <p class="sub">Compiles on your machine, so there's no Gatekeeper prompt and nothing to trust that you can't read first. Needs <code>xcode-select --install</code> — not the full Xcode.</p>
+
+    <div class="step">Then</div>
+    <p class="lede" style="margin-bottom:0">Press <b>Cmd-Space</b>, type <b>macbreak</b>, and set your intervals. Seven of them: how often each break comes, how long each lasts, snooze length, how long a screen lock counts as rest, and when the menu bar is allowed to start counting.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Questions</h2>
+    <details><summary>Does it work with multiple monitors?</summary>
+      <p>Yes. Every display is covered, each with its own countdown and buttons.</p></details>
+    <details><summary>Does it phone home?</summary>
+      <p>No. There is no network code in the repository — you can check. No account, no analytics, nothing leaves your machine.</p></details>
+    <details><summary>Is it code-signed?</summary>
+      <p>Not yet. The Homebrew cask clears the download quarantine for you. Building from source sidesteps the question entirely.</p></details>
+    <details><summary>Can I use it for eyes only?</summary>
+      <p>Set the walk interval very high in Preferences, and it effectively disappears.</p></details>
+    <details><summary>What if I'm in a meeting?</summary>
+      <p>Snooze, or Pause from the menu bar. Pause clears both clocks until you resume.</p></details>
+    <details><summary>How do I get rid of it?</summary>
+      <p><code>brew uninstall --cask macbreak</code>, or <code>make uninstall</code> from the source checkout. Both stop it and remove the login agent.</p></details>
+    <details><summary>Why not Electron?</summary>
+      <p>A break reminder that idles at 200 MB is its own kind of problem. This is AppKit — about 1,000 lines of Swift, no dependencies, no runtime.</p></details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>MIT licensed · <a href="https://github.com/deepakk33/macbreak">github.com/deepakk33/macbreak</a></p>
+    <p style="margin-top:6px">Now go look at something far away.</p>
+  </div>
+</footer>
+
+</body>
+</html>

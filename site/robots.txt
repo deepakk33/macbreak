@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://macbreak.vercel.app/sitemap.xml
