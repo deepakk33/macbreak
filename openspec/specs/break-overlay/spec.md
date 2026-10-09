@@ -16,7 +16,7 @@ the full frame of every attached display.
 #### Scenario: Two displays attached
 
 - **WHEN** a break fires with two displays connected
-- **THEN** both displays are fully covered, each with its own countdown and buttons
+- **THEN** both displays are fully covered, each with its own rest dial and Snooze button
 
 ### Requirement: Overlay Floats Above All Windows
 
@@ -76,37 +76,51 @@ walk by default — and ticking down once per second to `00:00`.
 - **WHEN** a look-away break starts with a 30 second duration
 - **THEN** the overlay shows `00:30` and counts down one second at a time
 
-### Requirement: Done Unlocks Only When The Rest Is Over
+### Requirement: Rest Dial
 
-"Done" SHALL be disabled and dimmed while the countdown runs, titled
-"Done in Ns", and SHALL become enabled and titled "Done" when the countdown
-reaches zero. Pressing it SHALL dismiss the overlay and restart the relevant
-clocks.
+The countdown SHALL sit inside a speedometer-style dial: a thick 270° band, open
+at the bottom, with no tick marks, filled with a calm per-kind gradient — sea
+glass for a look-away, sand into sage for a walk. The band SHALL drain
+continuously and clockwise over the rest, with a white bead riding its trailing
+end, and SHALL track the wall clock rather than drift from it, including across
+system sleep.
 
-#### Scenario: Pressing Done early is not possible
+#### Scenario: Halfway through a rest
+
+- **WHEN** half of a look-away break has elapsed
+- **THEN** half of the band remains, from the top of the dial clockwise to its end, with the bead at the top
+
+#### Scenario: Mac wakes from sleep mid-break
+
+- **WHEN** the Mac sleeps during a break and wakes before it would have ended
+- **THEN** within a second the dial shows the rest actually remaining
+
+### Requirement: The Rest Cannot Be Ended Early
+
+The overlay SHALL offer no control that ends the break before the countdown
+reaches zero. Snooze, which defers the break rather than completing it, SHALL be
+the only button.
+
+#### Scenario: User wants out at 12 seconds
 
 - **WHEN** 12 seconds remain on a look-away break
-- **THEN** the button reads "Done in 12s" and does not respond to clicks
+- **THEN** the only way out is Snooze, which counts the break as not taken
 
-#### Scenario: A long break counts down
+### Requirement: Overlay Dismisses Itself When The Rest Is Over
 
-- **WHEN** 9 minutes 56 seconds remain on a walk break
-- **THEN** the button reads "Done in 9:56" rather than a raw second count
+When the countdown reaches zero the overlay SHALL fade out on its own, within a
+second, without any input from the user, and SHALL restart the clocks as a
+completed break: a look-away restarts the look-away clock, a walk restarts both.
 
 #### Scenario: Countdown reaches zero
 
-- **WHEN** the countdown reaches `00:00`
-- **THEN** the button reads "Done" and dismisses the overlay when pressed
+- **WHEN** a look-away break's countdown reaches `00:00`
+- **THEN** the overlay fades away on every display and the next look-away is a full interval away
 
-### Requirement: Overlay Does Not Auto-Dismiss
+#### Scenario: Walk completes with no one at the machine
 
-The overlay SHALL remain on screen after the countdown ends until the user
-acknowledges it, so a break taken away from the desk is not missed on return.
-
-#### Scenario: User walks away for the whole break
-
-- **WHEN** the countdown ends with no one at the machine
-- **THEN** the overlay is still showing, with Done enabled, when the user returns
+- **WHEN** a walk break's countdown ends while the user is away from the desk
+- **THEN** the overlay has already gone when they return, and both clocks have restarted
 
 ### Requirement: Snooze Is Always Available
 
@@ -128,7 +142,8 @@ past the snooze window.
 
 The overlay SHALL be translucent rather than a solid black wall: an
 `NSVisualEffectView` blurs the desktop behind a dark tint, so the screen reads
-as a pause rather than a crash. Type SHALL be set in SF Rounded with the
+as a pause rather than a crash. The overlay SHALL fade out rather than vanish.
+Type SHALL be set in SF Rounded with the
 countdown using rounded monospaced digits, and accent colours SHALL be muted
 rather than saturated.
 
@@ -163,7 +178,7 @@ next CoreAnimation flush dereferences freed memory.
 
 #### Scenario: Dismissing a break
 
-- **WHEN** the user presses Done and the overlay windows are closed
+- **WHEN** a break ends and the overlay windows are closed
 - **THEN** the application keeps running and the menu bar item remains
 
 #### Scenario: Many breaks in one session

@@ -17,7 +17,7 @@ final class OverlayContentView: NSView {
 /// The controls on one screen's overlay that need updating every second.
 struct OverlayChrome {
     let countdown: NSTextField
-    let done: NSButton
+    let gauge: RestGauge
 }
 
 enum OverlayPalette {
@@ -31,6 +31,5 @@ enum OverlayPalette {
     static let secondaryText = NSColor(calibratedWhite: 0.62, alpha: 1.0)
     static let countdownText = NSColor(calibratedWhite: 1.0, alpha: 0.88)
 
-    static let doneEnabled = NSColor(calibratedRed: 0.29, green: 0.58, blue: 0.49, alpha: 0.92)
     static let snooze = NSColor(calibratedWhite: 1.0, alpha: 0.12)
 }

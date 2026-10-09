@@ -16,7 +16,7 @@
 
 <p align="center">
   <img src="site/assets/overlay-eye.jpg" width="820"
-       alt="MacBreak's eye-rest overlay: Rest your eyes, a 00:40 countdown, and a greyed-out Done in 40s button beside an active Snooze 10 min button.">
+       alt="MacBreak's eye-rest overlay: Rest your eyes, a 00:24 countdown inside a sea-glass dial that drains clockwise, and a Snooze 10 min button.">
 </p>
 
 ---
@@ -35,10 +35,11 @@ the rest of you:
 | 🚶 **Walk** | every 2 hours | 10 minutes | *"Take a lap — stairs count double"* |
 
 ```
-MENU BAR (quiet until a break is close):
+MENU BAR (quiet until a break is close; solid white SF Symbols, like macOS's own):
 
-  ☕                      ← more than 5 minutes away
-  ☕ 04:21                ← under 5 minutes, now it speaks up
+  👁                      ← more than 5 minutes away
+  👁 04:21                ← under 5 minutes, now it speaks up
+  🚶 01:58                ← a walk is next
 
   ┌────────────────────────┐        ┌──────────────────────────────────────┐
   │ Look away in 28:14     │        │  MacBreak Preferences                │
@@ -61,12 +62,14 @@ THE OVERLAY (blurred desktop behind it, SF Rounded, muted colours):
   │                 Rest your eyes                     │
   │        Roll your eyes slowly — clockwise           │
   │                                                    │
-  │                    00:23                           │
-  │                                                    │
+  │                  ╭─────────╮                       │
+  │                 ╱           ╲                      │
+  │                │    00:23    │  ← drains clockwise │
+  │                 ╲           ╱                      │
   │   Unclench your jaw · Drop your shoulders · Breathe│
   │                                                    │
-  │      [ Done in 23s ]      [ Snooze 10 min ]        │
-  │         ^ locked until the rest is over            │
+  │                [ Snooze 10 min ]                   │
+  │       at 00:00 it fades away on its own            │
   ╰────────────────────────────────────────────────────╯
 ```
 
@@ -75,8 +78,8 @@ THE OVERLAY (blurred desktop behind it, SF Rounded, muted colours):
 Most break reminders are a notification you dismiss without reading. MacBreak
 takes the screen instead, and **does not give it back early**:
 
-- **Done stays locked** until the rest countdown reaches zero. The countdown is the point.
-- **It never auto-dismisses.** Walk away for the full ten minutes and it is still waiting when you return — no missed break, no guessing.
+- **No way to end it early.** There is no Done button to reach for; the dial drains for the whole rest. The countdown is the point.
+- **Nothing to click when it's over.** At 00:00 the overlay fades out by itself and the clocks restart, so you never have to come back and dismiss it.
 - Covers **every display**, at `NSWindow.Level.screenSaver`, across all Spaces and over full-screen apps.
 - Re-asserts focus every 0.7s, so an app that steals focus doesn't win.
 - Swallows keystrokes, so reflex typing doesn't reach the app underneath.
@@ -94,7 +97,7 @@ clock running.
 
 ### It stays out of the menu bar
 
-The status item is just `☕` most of the day. It only shows a countdown once a
+The status item is just a solid eye icon most of the day. It only shows a countdown once a
 break is within five minutes — configurable, or set it high if you like watching
 numbers.
 
@@ -205,7 +208,7 @@ format:
 | Capability | Covers |
 | --- | --- |
 | [`break-scheduling`](openspec/specs/break-scheduling/spec.md) | Both cadences, walk precedence, screen-lock reset, pause, test overrides |
-| [`break-overlay`](openspec/specs/break-overlay/spec.md) | The blocker, rest countdown, locked Done, styling, snooze |
+| [`break-overlay`](openspec/specs/break-overlay/spec.md) | The blocker, rest dial, self-dismissal, styling, snooze |
 | [`menu-bar-control`](openspec/specs/menu-bar-control/spec.md) | Status item, quiet threshold, menu, preferences panel |
 | [`app-launch`](openspec/specs/app-launch/spec.md) | App bundle, Spotlight, single instance, reopen events |
 | [`login-agent`](openspec/specs/login-agent/spec.md) | launchd install/uninstall, quitting a KeepAlive job |

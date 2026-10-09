@@ -10,7 +10,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     // Active break
     private var activeKind: BreakKind?
     private var breakEndsAt: Date?
-    private var doneUnlocked = false
 
     // Screen lock
     private var lockedAt: Date?
@@ -18,6 +17,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     // Timers
     private var tickTimer: Timer?
     private var raiseTimer: Timer?
+    private var endTimer: Timer?
 
     // Overlay
     private var overlayWindows: [NSWindow] = []
@@ -28,6 +28,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private var lookAwayItem: NSMenuItem!
     private var walkItem: NSMenuItem!
     private var pauseItem: NSMenuItem!
+    private var statusSymbol: String?
 
     // Preferences
     private var prefsWindow: NSWindow?
@@ -151,7 +152,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     private func buildStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        statusItem.button?.title = BreakKind.lookAway.glyph
+        if let button = statusItem.button {
+            button.imagePosition = .imageLeading
+            // Fixed-width digits, so the item does not shuffle the menu bar every second.
+            button.font = .monospacedDigitSystemFont(ofSize: NSFont.menuBarFont(ofSize: 0).pointSize,
+                                                     weight: .regular)
+        }
+        showStatus(symbol: BreakKind.lookAway.symbolName, timer: nil)
 
         let menu = NSMenu()
 
@@ -178,21 +185,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         statusItem.menu = menu
     }
 
-    /// The menu bar is the user's workspace, not ours: show the glyph alone
+    /// The menu bar is the user's workspace, not ours: show the icon alone
     /// until a break is close enough to be worth knowing about.
     private func refreshStatus(now: Date) {
         if let kind = activeKind, let endsAt = breakEndsAt {
-            let remaining = Int(endsAt.timeIntervalSince(now).rounded())
-            statusItem.button?.title = remaining > 0
-                ? "\(kind.glyph) \(Clock.format(remaining))"
-                : kind.glyph
+            let remaining = self.remaining(until: endsAt, now: now)
+            showStatus(symbol: kind.symbolName, timer: Clock.format(remaining))
             lookAwayItem.title = kind == .walk ? "Walk break in progress" : "Look-away break in progress"
-            walkItem.title = remaining > 0 ? "Resting for \(Clock.format(remaining))" : "Press Done when ready"
+            walkItem.title = "Resting for \(Clock.format(remaining))"
             return
         }
 
         guard !isPaused else {
-            statusItem.button?.title = "\(BreakKind.lookAway.glyph) ⏸"
+            showStatus(symbol: "pause.circle.fill", timer: nil)
             lookAwayItem.title = "Paused"
             walkItem.title = "Paused"
             return
@@ -203,14 +208,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         lookAwayItem.title = "Look away in \(Clock.format(lookAwayLeft))"
         walkItem.title = "Walk in \(Clock.format(walkLeft))"
 
-        // Whichever break lands first decides both the glyph and whether we speak up.
-        let nextIsWalk = walkLeft < lookAwayLeft
+        // Whichever break lands first decides both the icon and whether we speak up.
+        let next: BreakKind = walkLeft < lookAwayLeft ? .walk : .lookAway
         let soonest = min(lookAwayLeft, walkLeft)
-        let glyph = nextIsWalk ? BreakKind.walk.glyph : BreakKind.lookAway.glyph
 
-        statusItem.button?.title = TimeInterval(soonest) <= Prefs.statusTimerThreshold
-            ? "\(glyph) \(Clock.format(soonest))"
-            : glyph
+        showStatus(symbol: next.symbolName,
+                   timer: TimeInterval(soonest) <= Prefs.statusTimerThreshold ? Clock.format(soonest) : nil)
+    }
+
+    /// A template SF Symbol, so macOS tints it white or black to suit the menu
+    /// bar, exactly like its own status items.
+    private func showStatus(symbol: String, timer: String?) {
+        guard let button = statusItem.button else { return }
+        if statusSymbol != symbol {
+            let config = NSImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
+            let image = NSImage(systemSymbolName: symbol, accessibilityDescription: "MacBreak")?
+                .withSymbolConfiguration(config)
+            image?.isTemplate = true
+            button.image = image
+            statusSymbol = symbol
+        }
+        button.title = timer.map { " \($0)" } ?? ""
     }
 
     private func remaining(until date: Date?, now: Date) -> Int {
@@ -250,9 +268,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private func beginBreak(_ kind: BreakKind) {
         guard activeKind == nil else { return }
 
+        let endsAt = Date().addingTimeInterval(kind.duration)
         activeKind = kind
-        breakEndsAt = Date().addingTimeInterval(kind.duration)
-        doneUnlocked = false
+        breakEndsAt = endsAt
         log("break started: \(kind == .walk ? "walk" : "look-away")")
 
         let prompt = kind.prompts.randomElement() ?? kind.prompts[0]
@@ -278,7 +296,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             window.hasShadow = false
             window.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary, .ignoresCycle]
             window.contentView = makeOverlayView(frame: NSRect(origin: .zero, size: screen.frame.size),
-                                                 kind: kind, prompt: prompt)
+                                                 kind: kind, prompt: prompt, endsAt: endsAt)
             window.setFrame(screen.frame, display: true)
             window.orderFrontRegardless()
             overlayWindows.append(window)
@@ -289,32 +307,40 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         overlayWindows.first?.makeFirstResponder(overlayWindows.first?.contentView)
 
         startRaising()
+        scheduleBreakEnd(at: endsAt)
         updateBreakCountdown(now: Date())
     }
 
-    /// Ticks the on-overlay countdown and unlocks "Done" when it reaches zero.
+    /// A one-shot timer rather than the 1 Hz tick, so the overlay lets go when
+    /// the dial empties instead of up to a second later.
+    private func scheduleBreakEnd(at date: Date) {
+        endTimer?.invalidate()
+        let timer = Timer(fire: date, interval: 0, repeats: false) { [weak self] _ in
+            self?.finishBreak()
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        endTimer = timer
+    }
+
+    /// Ticks the on-overlay countdown, and keeps the dial honest after a sleep.
     private func updateBreakCountdown(now: Date) {
         guard let endsAt = breakEndsAt else { return }
-        let remaining = max(0, Int(endsAt.timeIntervalSince(now).rounded()))
+        // Rounded, not ceiled: a break starts on a tick, so later ticks land on
+        // whole seconds and a ceiling would flip a second early on jitter.
+        let remaining = self.remaining(until: endsAt, now: now)
 
         for chrome in overlayChrome {
             chrome.countdown.stringValue = Clock.format(remaining)
-            if remaining > 0 {
-                chrome.done.isEnabled = false
-                style(chrome.done, title: "Done in \(Clock.compact(remaining))", enabled: false)
-            } else if !doneUnlocked {
-                chrome.done.isEnabled = true
-                chrome.done.layer?.backgroundColor = OverlayPalette.doneEnabled.cgColor
-                style(chrome.done, title: "Done", enabled: true)
-            }
+            chrome.gauge.sync(now: now)
         }
-
-        if remaining == 0 { doneUnlocked = true }
     }
 
-    @objc private func doneTapped() {
+    /// The rest is over, so the screen goes back on its own: nobody should have
+    /// to click to be allowed to work again.
+    private func finishBreak() {
         // Completing a walk counts as a look-away too, so both clocks restart.
-        let finished = activeKind
+        guard let finished = activeKind else { return }
+        log("break finished: \(finished == .walk ? "walk" : "look-away")")
         closeOverlay()
         rescheduleLookAway(after: Prefs.lookAwayInterval)
         if finished == .walk {
@@ -324,7 +350,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     @objc private func snoozeTapped() {
-        let snoozed = activeKind
+        guard let snoozed = activeKind else { return }
         closeOverlay()
         if snoozed == .walk {
             rescheduleWalk(after: Prefs.snoozeInterval)
@@ -338,18 +364,31 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         refreshStatus(now: Date())
     }
 
+    /// Fades the overlay out rather than snapping the desktop back, which
+    /// would undo the calm the break was for.
     private func closeOverlay() {
         stopRaising()
-        for window in overlayWindows {
-            window.orderOut(nil)
-            window.close()
-        }
+        endTimer?.invalidate()
+        endTimer = nil
+
+        let closing = overlayWindows
         overlayWindows.removeAll()
         overlayChrome.removeAll()
         activeKind = nil
         breakEndsAt = nil
-        doneUnlocked = false
-        NSApp.hide(nil)
+
+        for window in closing { window.ignoresMouseEvents = true }
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = 0.6
+            for window in closing { window.animator().alphaValue = 0 }
+        }, completionHandler: { [weak self] in
+            for window in closing {
+                window.orderOut(nil)
+                window.close()
+            }
+            // A new break could in principle have started during the fade.
+            if self?.activeKind == nil { NSApp.hide(nil) }
+        })
     }
 
     /// Keeps the overlay in front even if something else tries to take focus.
@@ -371,7 +410,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     // MARK: - Overlay view
 
-    private func makeOverlayView(frame: NSRect, kind: BreakKind, prompt: String) -> NSView {
+    private func makeOverlayView(frame: NSRect, kind: BreakKind, prompt: String, endsAt: Date) -> NSView {
         let root = OverlayContentView(frame: frame)
         root.wantsLayer = true
 
@@ -390,50 +429,50 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         tint.autoresizingMask = [.width, .height]
         root.addSubview(tint)
 
-        let centerX = frame.midX
-        let centerY = frame.midY
-
         let title = makeLabel(text: kind.heading, font: Typography.rounded(58, weight: .medium),
                               color: kind.accent, width: frame.width)
-        title.frame.origin = NSPoint(x: 0, y: centerY + 170)
-        root.addSubview(title)
-
         let subtitle = makeLabel(text: prompt, font: Typography.rounded(30, weight: .light),
                                  color: OverlayPalette.primaryText, width: frame.width)
-        subtitle.frame.origin = NSPoint(x: 0, y: centerY + 100)
-        root.addSubview(subtitle)
-
-        let countdown = makeLabel(text: Clock.format(Int(kind.duration)),
-                                  font: Typography.roundedMonospacedDigits(104, weight: .ultraLight),
-                                  color: OverlayPalette.countdownText, width: frame.width)
-        countdown.frame.origin = NSPoint(x: 0, y: centerY - 50)
-        root.addSubview(countdown)
-
         let hint = makeLabel(text: kind.hint, font: Typography.rounded(17, weight: .regular),
                              color: OverlayPalette.secondaryText, width: frame.width)
-        hint.frame.origin = NSPoint(x: 0, y: centerY - 100)
-        root.addSubview(hint)
 
-        let buttonWidth: CGFloat = 240
-        let buttonHeight: CGFloat = 62
-        let gap: CGFloat = 28
-        let buttonY = centerY - 210
+        let gauge = RestGauge(side: min(340, (frame.height * 0.4).rounded()), colors: kind.dialColors)
+        let buttonSize = NSSize(width: 240, height: 56)
 
-        let done = makeFlatButton(action: #selector(doneTapped),
-                                  background: OverlayPalette.doneEnabled.withAlphaComponent(0.35))
-        done.isEnabled = false
-        style(done, title: "Done in \(Clock.compact(Int(kind.duration)))", enabled: false)
-        done.frame = NSRect(x: centerX - buttonWidth - gap / 2, y: buttonY,
-                            width: buttonWidth, height: buttonHeight)
-        root.addSubview(done)
+        // Stack everything around the dial's centre, then centre the stack.
+        // The dial is open at the bottom, so the hint tucks up into that gap.
+        let above = gauge.frame.height / 2 + 28 + subtitle.frame.height + 12 + title.frame.height
+        let below = gauge.drawnDepthBelowCenter + 30 + hint.frame.height + 40 + buttonSize.height
+        let dialY = frame.midY + (below - above) / 2
+
+        gauge.frame.origin = NSPoint(x: frame.midX - gauge.frame.width / 2,
+                                     y: dialY - gauge.frame.height / 2)
+        subtitle.frame.origin = NSPoint(x: 0, y: gauge.frame.maxY + 28)
+        title.frame.origin = NSPoint(x: 0, y: subtitle.frame.maxY + 12)
+        hint.frame.origin = NSPoint(x: 0, y: dialY - gauge.drawnDepthBelowCenter - 30 - hint.frame.height)
+        for label in [title, subtitle, hint] { root.addSubview(label) }
+        root.addSubview(gauge)
+
+        // Digits sized to sit inside the band, with room to spare at h:mm:ss.
+        let digitSize = (gauge.frame.width * (kind.duration >= 3600 ? 0.15 : 0.21)).rounded()
+        let digitFont = Typography.roundedMonospacedDigits(digitSize, weight: .light)
+        let countdown = makeLabel(text: Clock.format(Int(kind.duration)), font: digitFont,
+                                  color: OverlayPalette.countdownText, width: gauge.frame.width)
+        countdown.frame.size.height = countdown.fittingSize.height
+        // Centre the digits themselves, not the line box with its descender.
+        countdown.frame.origin.y = gauge.frame.height / 2 + digitFont.ascender
+            - digitFont.capHeight / 2 - countdown.frame.height
+        gauge.addSubview(countdown)
+        gauge.run(total: kind.duration, endsAt: endsAt)
 
         let snooze = makeFlatButton(action: #selector(snoozeTapped), background: OverlayPalette.snooze)
-        style(snooze, title: "Snooze \(Prefs.snoozeMinutes) min", enabled: true)
-        snooze.frame = NSRect(x: centerX + gap / 2, y: buttonY,
-                              width: buttonWidth, height: buttonHeight)
+        style(snooze, title: "Snooze \(Prefs.snoozeMinutes) min")
+        snooze.frame = NSRect(origin: NSPoint(x: frame.midX - buttonSize.width / 2,
+                                              y: hint.frame.minY - 40 - buttonSize.height),
+                              size: buttonSize)
         root.addSubview(snooze)
 
-        overlayChrome.append(OverlayChrome(countdown: countdown, done: done))
+        overlayChrome.append(OverlayChrome(countdown: countdown, gauge: gauge))
         return root
     }
 
@@ -459,18 +498,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         return button
     }
 
-    /// NSButton ignores `isEnabled` for attributed titles, so dim it ourselves.
-    private func style(_ button: NSButton, title: String, enabled: Bool) {
+    private func style(_ button: NSButton, title: String) {
         button.attributedTitle = NSAttributedString(
             string: title,
             attributes: [
-                .foregroundColor: enabled
-                    ? OverlayPalette.primaryText
-                    : NSColor(calibratedWhite: 1.0, alpha: 0.4),
+                .foregroundColor: OverlayPalette.primaryText,
                 .font: Typography.rounded(20, weight: .medium)
             ]
         )
-        button.layer?.opacity = enabled ? 1.0 : 0.6
     }
 
     // MARK: - Preferences window

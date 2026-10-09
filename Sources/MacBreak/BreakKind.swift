@@ -56,14 +56,35 @@ enum BreakKind {
         }
     }
 
-    var glyph: String {
+    /// Calm, low-contrast sweeps for the rest dial: sea glass for the eyes,
+    /// sand into sage for the walk.
+    var dialColors: [NSColor] {
         switch self {
-        case .lookAway: return "☕"
-        case .walk:     return "🚶"
+        case .lookAway:
+            return [
+                NSColor(calibratedRed: 0.55, green: 0.86, blue: 0.78, alpha: 1.0),
+                NSColor(calibratedRed: 0.38, green: 0.76, blue: 0.80, alpha: 1.0),
+                NSColor(calibratedRed: 0.44, green: 0.62, blue: 0.91, alpha: 1.0)
+            ]
+        case .walk:
+            return [
+                NSColor(calibratedRed: 0.93, green: 0.80, blue: 0.58, alpha: 1.0),
+                NSColor(calibratedRed: 0.78, green: 0.82, blue: 0.58, alpha: 1.0),
+                NSColor(calibratedRed: 0.55, green: 0.80, blue: 0.64, alpha: 1.0)
+            ]
         }
     }
 
-    /// How long the overlay holds the screen before "Done" unlocks.
+    /// SF Symbol for the menu bar. Drawn as a template image, so macOS tints it
+    /// to match the menu bar like every built-in status item.
+    var symbolName: String {
+        switch self {
+        case .lookAway: return "eye.fill"
+        case .walk:     return "figure.walk"
+        }
+    }
+
+    /// How long the overlay holds the screen before it lets go on its own.
     var duration: TimeInterval {
         switch self {
         case .lookAway: return Prefs.lookAwayDuration

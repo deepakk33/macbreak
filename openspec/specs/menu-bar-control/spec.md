@@ -20,7 +20,7 @@ window.
 
 ### Requirement: Status Item Stays Quiet Until A Break Is Close
 
-The menu bar belongs to the user, so the status item SHALL show only the glyph
+The menu bar belongs to the user, so the status item SHALL show only the icon
 of whichever break lands first while that break is further away than the
 configured threshold — 5 minutes by default. Within the threshold it SHALL
 append the remaining time, formatted `mm:ss`, refreshed every second.
@@ -28,27 +28,45 @@ append the remaining time, formatted `mm:ss`, refreshed every second.
 #### Scenario: Next break is far off
 
 - **WHEN** the nearest break is 24 minutes away
-- **THEN** the status item reads "☕" with no countdown
+- **THEN** the status item shows the eye icon with no countdown
 
 #### Scenario: Next break is within the threshold
 
 - **WHEN** the nearest break is 4 minutes 21 seconds away and the threshold is 5 minutes
-- **THEN** the status item reads "☕ 04:21"
+- **THEN** the status item shows the eye icon and "04:21"
 
 #### Scenario: A walk is the nearer break
 
 - **WHEN** a walk is 2 minutes away and a look-away is 25 minutes away
-- **THEN** the status item reads "🚶 02:00"
+- **THEN** the status item shows the walking-figure icon and "02:00"
 
 #### Scenario: Paused
 
 - **WHEN** MacBreak is paused
-- **THEN** the status item reads "☕ ⏸"
+- **THEN** the status item shows a filled pause icon
 
 #### Scenario: Break in progress
 
 - **WHEN** an overlay is showing with 18 seconds of rest left
-- **THEN** the status item shows that kind's glyph and "00:18" regardless of the threshold
+- **THEN** the status item shows that kind's icon and "00:18" regardless of the threshold
+
+### Requirement: Status Item Uses Native Template Icons
+
+The status item SHALL draw solid SF Symbols as template images — `eye.fill`
+for a look-away, `figure.walk` for a walk, `pause.circle.fill` while paused — so
+macOS tints them to match the menu bar exactly as it does its own items. The
+countdown beside the icon SHALL use monospaced digits so the item does not
+change width every second.
+
+#### Scenario: Dark menu bar
+
+- **WHEN** the menu bar is dark
+- **THEN** the icon is drawn in solid white, like the system's own status items
+
+#### Scenario: Countdown ticking
+
+- **WHEN** the menu bar countdown moves from "01:11" to "01:10"
+- **THEN** the status item keeps the same width
 
 ### Requirement: Menu Lists Both Countdowns
 

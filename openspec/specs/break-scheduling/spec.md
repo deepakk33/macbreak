@@ -93,4 +93,4 @@ interval, `MACBREAK_DURATION_SECONDS` for both break durations, and
 #### Scenario: Short intervals for a demo
 
 - **WHEN** MacBreak is launched with `MACBREAK_BREAK_SECONDS=10 MACBREAK_DURATION_SECONDS=5`
-- **THEN** a look-away overlay appears after 10 seconds and unlocks Done after 5
+- **THEN** a look-away overlay appears after 10 seconds and dismisses itself 5 seconds later
