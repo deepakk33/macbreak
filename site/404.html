@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page not found | MacBreak</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d0f14">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  :root{
+    --bg:#0d0f14; --bg-soft:#13161d; --line:#222733;
+    --fg:#e8eaef; --muted:#8e97a8; --faint:#798193;
+    --sage:#8fcfbd; --sand:#e8c28c; --radius:14px;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Rounded","Segoe UI",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+       line-height:1.7;-webkit-font-smoothing:antialiased;font-size:17px}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px}
+  a{color:var(--sage)}
+  h1,h2,h3{line-height:1.2;letter-spacing:-.02em;font-weight:600}
+  code,pre{font-family:var(--mono);font-size:14px}
+
+  .top{border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--fg);text-decoration:none;font-weight:600}
+  .brand img{border-radius:7px}
+  .btn{display:inline-block;padding:9px 16px;border-radius:10px;text-decoration:none;
+       font-weight:600;font-size:14px;background:var(--sage);color:#0b1a16}
+  .btn:hover{filter:brightness(1.08)}
+
+  .crumbs{font-size:13.5px;color:var(--faint);margin:34px 0 0}
+  .crumbs a{color:var(--muted);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--faint)}
+  article h1{font-size:clamp(31px,5.4vw,46px);margin:14px 0 16px}
+  .lede{font-size:clamp(17px,2.3vw,20px);color:var(--muted);margin:0 0 10px}
+  .meta{color:var(--faint);font-size:13.5px;margin:0 0 34px}
+  article h2{font-size:clamp(22px,3.2vw,28px);margin:48px 0 10px}
+  article h3{font-size:19px;margin:28px 0 6px}
+  article p,article li{color:#c4cad6}
+  article li{margin:6px 0}
+  article strong{color:var(--fg)}
+
+  .callout{background:var(--bg-soft);border:1px solid var(--line);border-left:3px solid var(--sage);
+           border-radius:12px;padding:16px 20px;margin:22px 0}
+  .callout p{margin:0}
+
+  .shot{margin:26px 0}
+  .shot img{width:100%;height:auto;display:block;border-radius:16px;
+            border:1px solid var(--line);background:#0b0d12}
+  .shot figcaption{color:var(--faint);font-size:13.5px;margin-top:10px;text-align:center}
+
+  .table{overflow-x:auto;margin:20px 0;border:1px solid var(--line);border-radius:12px}
+  table{border-collapse:collapse;width:100%;font-size:15px;min-width:560px}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;background:var(--bg-soft);font-size:13.5px;
+     text-transform:uppercase;letter-spacing:.05em}
+  tr:last-child td{border-bottom:0}
+  td{color:#c4cad6}
+  tr.us td{background:rgba(143,207,189,.06)}
+  tr.us td:first-child{color:var(--sage);font-weight:600}
+  .note{color:var(--faint);font-size:13.5px}
+
+  pre{background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;
+      padding:16px 18px;overflow-x:auto;margin:0 0 14px;color:var(--fg)}
+  pre .c{color:var(--faint)}
+  pre .p{color:var(--sage)}
+
+  .cta{background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+       padding:26px;margin:52px 0 10px}
+  .cta h2{margin:0 0 8px}
+  .cta p{color:var(--muted);margin:0 0 16px}
+
+  details{border-bottom:1px solid var(--line);padding:14px 0}
+  summary{cursor:pointer;font-weight:600;font-size:16px;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"+";color:var(--sage);margin-right:11px;font-weight:400}
+  details[open] summary::before{content:"–"}
+  details p{color:var(--muted);margin:10px 0 2px;font-size:15.5px}
+
+  footer{padding:46px 0 60px;border-top:1px solid var(--line);margin-top:60px;
+         color:var(--faint);font-size:14px;text-align:center}
+  footer a{color:var(--muted)}
+  footer nav{display:flex;gap:8px 20px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+  .lost{text-align:center;padding:90px 0 40px}
+  .lost img{border-radius:15px;margin-bottom:20px}
+</style>
+</head>
+<body>
+<main class="wrap lost">
+  <img src="/favicon.svg" width="64" height="64" alt="">
+  <h1>Nothing to see here</h1>
+  <p class="lede">That page doesn't exist. Good moment to look at something 20 feet away.</p>
+  <p><a href="/">MacBreak home</a> · <a href="/20-20-20-rule-mac">The 20-20-20 rule on Mac</a> · <a href="/safe-eyes-for-mac">Safe Eyes for Mac</a></p>
+</main>
+</body>
+</html>

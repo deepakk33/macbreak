@@ -1,0 +1,18 @@
+# MacBreak
+
+> MacBreak is a free, open-source (MIT) eye break reminder for macOS 13+ on Apple Silicon and Intel. It follows the 20-20-20 rule with full-screen look-away breaks, adds longer walk breaks against RSI, keeps the screen covered until the rest is over, then closes the overlay by itself. Native Swift/AppKit menu bar app, about 10 MB of memory, no account, no telemetry.
+
+Install: `brew install --cask deepakk33/tap/macbreak`, or build from source with `curl -fsSL https://raw.githubusercontent.com/deepakk33/macbreak/main/scripts/bootstrap.sh | bash`.
+
+Defaults: a 30-second eye break every 30 minutes and a 10-minute walk every 2 hours, all configurable (set 20 minutes / 20 seconds for the exact 20-20-20 rule). Breaks cannot be ended early, only snoozed. A screen lock of 5+ minutes counts as a break. MacBreak is macOS only.
+
+## Pages
+
+- [MacBreak home](https://macbreak.vercel.app/): what it does, screenshots, install, FAQ
+- [The 20-20-20 rule on Mac](https://macbreak.vercel.app/20-20-20-rule-mac): the rule, why it helps, and how to automate it on macOS
+- [Safe Eyes for Mac](https://macbreak.vercel.app/safe-eyes-for-mac): Safe Eyes is Linux-only; MacBreak compared with Safe Eyes, Stretchly, BreakTimer, LookAway and Time Out
+
+## Source
+
+- [GitHub repository](https://github.com/deepakk33/macbreak)
+- [Releases](https://github.com/deepakk33/macbreak/releases)

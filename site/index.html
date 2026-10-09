@@ -3,22 +3,206 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MacBreak — a break reminder for macOS you can't click away</title>
-<meta name="description" content="Free, open-source break timer for Mac. A 30-second eye rest every 30 minutes, a 10-minute walk every 2 hours. The screen stays covered until you've actually rested, then hands itself back. Native Swift, no Electron, no account, no telemetry.">
+<title>MacBreak: Free Eye Break Reminder &amp; 20-20-20 Timer for Mac</title>
+<meta name="description" content="Free, open-source eye break reminder for Mac. Follows the 20-20-20 rule to ease eye strain, adds RSI walk breaks, and holds the screen until you've rested.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="Deepak">
 <link rel="canonical" href="https://macbreak.vercel.app/">
+
 <meta property="og:type" content="website">
-<meta property="og:title" content="MacBreak — a break reminder for macOS you can't click away">
-<meta property="og:description" content="20-20-20 eye rests every 30 minutes, a walk every 2 hours. Native Swift menu bar app. Install with one brew command.">
+<meta property="og:site_name" content="MacBreak">
+<meta property="og:locale" content="en_US">
 <meta property="og:url" content="https://macbreak.vercel.app/">
-<meta property="og:image" content="https://macbreak.vercel.app/assets/overlay-eye.jpg">
+<meta property="og:title" content="MacBreak — the eye break reminder for Mac you can't click away">
+<meta property="og:description" content="20-20-20 eye rests and walk breaks that take the screen until you've actually rested. Free, open source, native Swift. Install with one brew command.">
+<meta property="og:image" content="https://macbreak.vercel.app/assets/og-image.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="MacBreak's eye-rest overlay: Rest your eyes, with a 00:24 countdown inside a calm sea-glass dial.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://macbreak.vercel.app/assets/overlay-eye.jpg">
+<meta name="twitter:title" content="MacBreak — the eye break reminder for Mac you can't click away">
+<meta name="twitter:description" content="20-20-20 eye rests and walk breaks that take the screen until you've actually rested. Free, open source, native Swift.">
+<meta name="twitter:image" content="https://macbreak.vercel.app/assets/og-image.jpg">
+<meta name="twitter:image:alt" content="MacBreak's eye-rest overlay: Rest your eyes, with a 00:24 countdown inside a calm sea-glass dial.">
+
 <meta name="theme-color" content="#0d0f14">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👁️</text></svg>">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-title" content="MacBreak">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="MacBreak summary for language models">
+
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "WebSite",
+   "@id": "https://macbreak.vercel.app/#website",
+   "url": "https://macbreak.vercel.app/",
+   "name": "MacBreak",
+   "description": "Free, open-source eye break reminder for Mac that follows the 20-20-20 rule.",
+   "inLanguage": "en",
+   "publisher": {
+    "@id": "https://macbreak.vercel.app/#author"
+   }
+  },
+  {
+   "@type": "Person",
+   "@id": "https://macbreak.vercel.app/#author",
+   "name": "Deepak",
+   "url": "https://github.com/deepakk33"
+  },
+  {
+   "@type": "SoftwareApplication",
+   "@id": "https://macbreak.vercel.app/#app",
+   "name": "MacBreak",
+   "description": "A free, open-source eye break reminder and break timer for macOS. It follows the 20-20-20 rule with full-screen look-away breaks, adds longer walk breaks to prevent RSI, and keeps the screen covered until the rest is over.",
+   "url": "https://macbreak.vercel.app/",
+   "image": "https://macbreak.vercel.app/assets/og-image.jpg",
+   "screenshot": [
+    "https://macbreak.vercel.app/assets/overlay-eye.jpg",
+    "https://macbreak.vercel.app/assets/overlay-walk.jpg"
+   ],
+   "applicationCategory": "HealthApplication",
+   "applicationSubCategory": "Break reminder",
+   "operatingSystem": "macOS 13 Ventura or later (Apple Silicon and Intel)",
+   "softwareVersion": "1.3.1",
+   "datePublished": "2026-10-06",
+   "dateModified": "2026-10-09",
+   "downloadUrl": "https://github.com/deepakk33/macbreak/releases/latest",
+   "installUrl": "https://macbreak.vercel.app/#install",
+   "releaseNotes": "https://github.com/deepakk33/macbreak/releases",
+   "license": "https://opensource.org/licenses/MIT",
+   "isAccessibleForFree": true,
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+   },
+   "author": {
+    "@id": "https://macbreak.vercel.app/#author"
+   },
+   "sameAs": [
+    "https://github.com/deepakk33/macbreak"
+   ],
+   "featureList": [
+    "20-20-20 eye break reminders",
+    "Walk breaks every 2 hours",
+    "Full-screen overlay on every display",
+    "Breaks cannot be dismissed early",
+    "Overlay closes itself when the rest is over",
+    "Screen lock counts as a break",
+    "Snooze and pause",
+    "Menu bar app with no Dock icon",
+    "No account, no telemetry"
+   ],
+   "keywords": "eye break reminder, 20-20-20 rule, break timer for Mac, eye strain, RSI, Safe Eyes alternative, Stretchly alternative, menu bar app"
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://macbreak.vercel.app/#faq",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Does it work with multiple monitors?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. Every display is covered, each with its own countdown and buttons."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is MacBreak free?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. It is free and open source under the MIT licence, with no paid tier, no account and no ads."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does it work on Intel Macs and older macOS?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. Every build is universal — Apple Silicon and Intel — and runs on macOS 13 Ventura or later."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is there a version of Safe Eyes for Mac?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Not officially: Safe Eyes is built for Linux. MacBreak covers the same ground natively on macOS — full-screen eye breaks, longer movement breaks, and breaks that can't be dismissed early. Read the comparison."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "How do I follow the 20-20-20 rule on a Mac?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Install MacBreak, open Preferences, and set \"Look away every\" to 20 minutes and \"Look away for\" to 20 seconds. Every 20 minutes the screen asks you to look at something at least 20 feet away. More on the rule."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does it phone home?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No. There is no network code in the repository — you can check. No account, no analytics, nothing leaves your machine."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is it code-signed?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Not yet. The Homebrew cask clears the download quarantine for you. Building from source sidesteps the question entirely."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Can I use it for eyes only?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Set the walk interval very high in Preferences, and it effectively disappears."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "What if I'm in a meeting?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Snooze, or Pause from the menu bar. Pause clears both clocks until you resume."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "How do I get rid of it?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "brew uninstall --cask macbreak, or make uninstall from the source checkout. Both stop it and remove the login agent."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Why not Electron?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "A break reminder that idles at 200 MB is its own kind of problem. This is AppKit — about 1,200 lines of Swift, around 10 MB of memory, no dependencies, no runtime."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
 <style>
   :root{
     --bg:#0d0f14; --bg-soft:#13161d; --line:#222733;
-    --fg:#e8eaef; --muted:#8e97a8; --faint:#5c6476;
+    --fg:#e8eaef; --muted:#8e97a8; --faint:#798193;
     --sage:#8fcfbd; --sand:#e8c28c; --radius:14px;
     --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
     --sans:-apple-system,BlinkMacSystemFont,"SF Pro Rounded","Segoe UI",system-ui,sans-serif;
@@ -35,7 +219,7 @@
   /* hero */
   header{padding:96px 0 72px;text-align:center;
          background:radial-gradient(900px 420px at 50% -12%,rgba(143,207,189,.10),transparent 70%)}
-  .glyph{font-size:50px;line-height:1;margin-bottom:22px}
+  .glyph{display:block;width:64px;height:64px;margin:0 auto 22px;border-radius:15px}
   h1{font-size:clamp(34px,6.2vw,56px);margin:0 0 18px}
   .tag{font-size:clamp(17px,2.4vw,21px);color:var(--muted);max-width:40ch;margin:0 auto 34px}
   .tag b{color:var(--fg);font-weight:600}
@@ -103,6 +287,7 @@
   footer{padding:46px 0 60px;border-top:1px solid var(--line);
          color:var(--faint);font-size:14px;text-align:center}
   footer a{color:var(--muted)}
+  footer nav{display:flex;gap:8px 20px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
 
   @media(max-width:640px){
     .cards{grid-template-columns:1fr}
@@ -114,18 +299,20 @@
 
 <header>
   <div class="wrap">
-    <div class="glyph">👁️</div>
-    <h1>The break reminder you<br>can't click away</h1>
+    <img class="glyph" src="/favicon.svg" width="64" height="64" alt="MacBreak icon">
+    <h1>The eye break reminder<br>for Mac you can't click away</h1>
     <p class="tag">MacBreak takes the screen when it's time to rest, and <b>gives it back when you've actually rested</b>.</p>
     <div class="cta">
       <a class="btn btn-primary" href="#install">Install</a>
       <a class="btn btn-ghost" href="https://github.com/deepakk33/macbreak">View source</a>
     </div>
-    <p class="sub">macOS 13+ · Native Swift · MIT · No account, no telemetry</p>
+    <p class="sub">macOS 13+ · Apple Silicon &amp; Intel · Native Swift · Free &amp; MIT · No account, no telemetry</p>
   </div>
 </header>
 
-<section>
+<main>
+
+<section id="breaks">
   <div class="wrap">
     <h2>Two breaks, because eyes and legs want different things</h2>
     <p class="lede">Eye strain comes from hours of fixed focus. Stiffness comes from hours of not moving. One timer can't fix both, so MacBreak runs two.</p>
@@ -134,7 +321,7 @@
         <div class="k">👁️</div>
         <h3>Rest your eyes</h3>
         <div class="when">every 30 min · 30 seconds</div>
-        <p>The 20-20-20 rule, enforced. Ten different prompts — look 20 metres away, roll your eyes slowly, palm them in the dark — so you keep reading instead of tuning it out.</p>
+        <p>The <a href="/20-20-20-rule-mac">20-20-20 rule</a>, enforced. Ten different prompts — look 20 metres away, roll your eyes slowly, palm them in the dark — so you keep reading instead of tuning it out. Want the rule exactly? Set 20 minutes and 20 seconds in Preferences.</p>
       </div>
       <div class="card walk">
         <div class="k">🚶</div>
@@ -151,13 +338,13 @@
     <h2>Why it works when notifications don't</h2>
     <p class="lede">A banner you swat away without reading isn't a break. MacBreak covers every display and holds it.</p>
     <figure class="shot">
-      <img src="/assets/overlay-eye.jpg" width="1600" height="1280"
+      <img src="/assets/overlay-eye.jpg" width="1600" height="1280" decoding="async"
            alt="MacBreak's eye-rest overlay filling the screen: the heading Rest your eyes, the prompt Cup your palms over your eyes and sit in the dark, a 00:24 countdown inside a sea-glass dial that drains clockwise, and a Snooze 10 min button.">
       <figcaption>The eye break. The dial drains as you rest, and at <b>00:00</b> the screen comes back on its own.</figcaption>
     </figure>
 
     <figure class="shot">
-      <img src="/assets/overlay-walk.jpg" width="1600" height="1280" loading="lazy"
+      <img src="/assets/overlay-walk.jpg" width="1600" height="1280" loading="lazy" decoding="async"
            alt="MacBreak's walk overlay: the heading Time for a walk, the prompt Step outside and look at the sky, a 09:57 countdown inside a sand-to-sage dial, and a Snooze 10 min button."
            >
       <figcaption>The walk break, ten minutes of it. Your desktop is still there, just out of reach.</figcaption>
@@ -188,6 +375,14 @@
   </div>
 </section>
 
+<section id="switching">
+  <div class="wrap">
+    <h2>Coming from Safe Eyes, Stretchly or another break timer?</h2>
+    <p class="lede">Safe Eyes is a much-loved break reminder, but it only runs on Linux. Stretchly and BreakTimer run on a Mac through Electron. MacBreak is the native option: about 1,200 lines of Swift and AppKit, using around 10 MB of memory while it waits.</p>
+    <p class="lede" style="margin-bottom:0"><a href="/safe-eyes-for-mac">See how Safe Eyes, Stretchly, BreakTimer, LookAway and Time Out compare on macOS →</a></p>
+  </div>
+</section>
+
 <section id="install">
   <div class="wrap">
     <h2>Install</h2>
@@ -206,11 +401,19 @@
   </div>
 </section>
 
-<section>
+<section id="faq">
   <div class="wrap">
     <h2>Questions</h2>
     <details><summary>Does it work with multiple monitors?</summary>
       <p>Yes. Every display is covered, each with its own countdown and buttons.</p></details>
+    <details><summary>Is MacBreak free?</summary>
+      <p>Yes. It is free and open source under the MIT licence, with no paid tier, no account and no ads.</p></details>
+    <details><summary>Does it work on Intel Macs and older macOS?</summary>
+      <p>Yes. Every build is universal — Apple Silicon and Intel — and runs on macOS 13 Ventura or later.</p></details>
+    <details><summary>Is there a version of Safe Eyes for Mac?</summary>
+      <p>Not officially: Safe Eyes is built for Linux. MacBreak covers the same ground natively on macOS — full-screen eye breaks, longer movement breaks, and breaks that can't be dismissed early. <a href="/safe-eyes-for-mac">Read the comparison</a>.</p></details>
+    <details><summary>How do I follow the 20-20-20 rule on a Mac?</summary>
+      <p>Install MacBreak, open Preferences, and set "Look away every" to 20 minutes and "Look away for" to 20 seconds. Every 20 minutes the screen asks you to look at something at least 20 feet away. <a href="/20-20-20-rule-mac">More on the rule</a>.</p></details>
     <details><summary>Does it phone home?</summary>
       <p>No. There is no network code in the repository — you can check. No account, no analytics, nothing leaves your machine.</p></details>
     <details><summary>Is it code-signed?</summary>
@@ -222,12 +425,20 @@
     <details><summary>How do I get rid of it?</summary>
       <p><code>brew uninstall --cask macbreak</code>, or <code>make uninstall</code> from the source checkout. Both stop it and remove the login agent.</p></details>
     <details><summary>Why not Electron?</summary>
-      <p>A break reminder that idles at 200 MB is its own kind of problem. This is AppKit — about 1,000 lines of Swift, no dependencies, no runtime.</p></details>
+      <p>A break reminder that idles at 200 MB is its own kind of problem. This is AppKit — about 1,200 lines of Swift, around 10 MB of memory, no dependencies, no runtime.</p></details>
   </div>
 </section>
 
+</main>
+
 <footer>
   <div class="wrap">
+    <nav aria-label="Site">
+      <a href="/">MacBreak</a>
+      <a href="/20-20-20-rule-mac">The 20-20-20 rule on Mac</a>
+      <a href="/safe-eyes-for-mac">Safe Eyes for Mac</a>
+      <a href="https://github.com/deepakk33/macbreak/releases">Releases</a>
+    </nav>
     <p>MIT licensed · <a href="https://github.com/deepakk33/macbreak">github.com/deepakk33/macbreak</a></p>
     <p style="margin-top:6px">Now go look at something far away.</p>
   </div>

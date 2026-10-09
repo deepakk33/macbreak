@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://macbreak.vercel.app/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://macbreak.vercel.app/</loc>
+    <lastmod>2026-10-09</lastmod>
+    <image:image><image:loc>https://macbreak.vercel.app/assets/overlay-eye.jpg</image:loc></image:image>
+    <image:image><image:loc>https://macbreak.vercel.app/assets/overlay-walk.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://macbreak.vercel.app/20-20-20-rule-mac</loc>
+    <lastmod>2026-10-09</lastmod>
+    <image:image><image:loc>https://macbreak.vercel.app/assets/overlay-eye.jpg</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://macbreak.vercel.app/safe-eyes-for-mac</loc>
+    <lastmod>2026-10-09</lastmod>
+  </url>
 </urlset>

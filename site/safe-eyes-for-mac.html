@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Safe Eyes for Mac: A Native macOS Alternative | MacBreak</title>
+<meta name="description" content="Safe Eyes is Linux-only. Get the same full-screen eye break reminders on macOS, and see how MacBreak, Stretchly, BreakTimer, LookAway and Time Out compare.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="Deepak">
+<link rel="canonical" href="https://macbreak.vercel.app/safe-eyes-for-mac">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="MacBreak">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://macbreak.vercel.app/safe-eyes-for-mac">
+<meta property="og:title" content="Safe Eyes for Mac? Here&#x27;s the native alternative">
+<meta property="og:description" content="Safe Eyes doesn&#x27;t run on macOS. MacBreak brings the same full-screen eye and walk breaks to the Mac — free, open source and native.">
+<meta property="og:image" content="https://macbreak.vercel.app/assets/og-image.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="MacBreak's eye-rest overlay: Rest your eyes, with a countdown inside a calm sea-glass dial.">
+<meta property="article:published_time" content="2026-10-09">
+<meta property="article:modified_time" content="2026-10-09">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Safe Eyes for Mac? Here&#x27;s the native alternative">
+<meta name="twitter:description" content="Safe Eyes doesn&#x27;t run on macOS. MacBreak brings the same full-screen eye and walk breaks to the Mac — free, open source and native.">
+<meta name="twitter:image" content="https://macbreak.vercel.app/assets/og-image.jpg">
+<meta name="twitter:image:alt" content="MacBreak's eye-rest overlay: Rest your eyes, with a countdown inside a calm sea-glass dial.">
+
+<meta name="theme-color" content="#0d0f14">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Article",
+   "@id": "https://macbreak.vercel.app/safe-eyes-for-mac#article",
+   "headline": "Safe Eyes for Mac? Here's the native alternative",
+   "description": "Safe Eyes is Linux-only. Get the same full-screen eye break reminders on macOS, and see how MacBreak, Stretchly, BreakTimer, LookAway and Time Out compare.",
+   "url": "https://macbreak.vercel.app/safe-eyes-for-mac",
+   "mainEntityOfPage": "https://macbreak.vercel.app/safe-eyes-for-mac",
+   "inLanguage": "en",
+   "image": [
+    "https://macbreak.vercel.app/assets/og-image.jpg",
+    "https://macbreak.vercel.app/assets/overlay-eye.jpg"
+   ],
+   "datePublished": "2026-10-09",
+   "dateModified": "2026-10-09",
+   "author": {
+    "@type": "Person",
+    "name": "Deepak",
+    "url": "https://github.com/deepakk33"
+   },
+   "publisher": {
+    "@type": "Person",
+    "name": "Deepak",
+    "url": "https://github.com/deepakk33"
+   },
+   "about": {
+    "@id": "https://macbreak.vercel.app/#app"
+   },
+   "isPartOf": {
+    "@id": "https://macbreak.vercel.app/#website"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "MacBreak",
+     "item": "https://macbreak.vercel.app/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Safe Eyes for Mac",
+     "item": "https://macbreak.vercel.app/safe-eyes-for-mac"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://macbreak.vercel.app/safe-eyes-for-mac#faq",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Is there an official Safe Eyes for Mac?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No. Safe Eyes is developed for Linux, and its installation guide covers Linux distributions only. MacBreak is a separate, independent project that brings the same kind of full-screen breaks to macOS."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is MacBreak affiliated with Safe Eyes?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No. MacBreak is an independent open-source project. Safe Eyes is mentioned here only to help Mac users find an equivalent."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is MacBreak free like Safe Eyes?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. It is free and open source under the MIT licence, with no paid tier, no account and no ads."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does MacBreak run on Windows or Linux?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No, it is macOS only. On Linux, Safe Eyes is a great choice; for Windows, Stretchly and BreakTimer are cross-platform."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "What's the best Stretchly alternative for Mac?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "If you want a native app rather than an Electron one, MacBreak covers the same core — short eye breaks, longer movement breaks, breaks that can't be ended early — in around 10 MB of memory."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+<style>
+  :root{
+    --bg:#0d0f14; --bg-soft:#13161d; --line:#222733;
+    --fg:#e8eaef; --muted:#8e97a8; --faint:#798193;
+    --sage:#8fcfbd; --sand:#e8c28c; --radius:14px;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Rounded","Segoe UI",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+       line-height:1.7;-webkit-font-smoothing:antialiased;font-size:17px}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px}
+  a{color:var(--sage)}
+  h1,h2,h3{line-height:1.2;letter-spacing:-.02em;font-weight:600}
+  code,pre{font-family:var(--mono);font-size:14px}
+
+  .top{border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--fg);text-decoration:none;font-weight:600}
+  .brand img{border-radius:7px}
+  .btn{display:inline-block;padding:9px 16px;border-radius:10px;text-decoration:none;
+       font-weight:600;font-size:14px;background:var(--sage);color:#0b1a16}
+  .btn:hover{filter:brightness(1.08)}
+
+  .crumbs{font-size:13.5px;color:var(--faint);margin:34px 0 0}
+  .crumbs a{color:var(--muted);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--faint)}
+  article h1{font-size:clamp(31px,5.4vw,46px);margin:14px 0 16px}
+  .lede{font-size:clamp(17px,2.3vw,20px);color:var(--muted);margin:0 0 10px}
+  .meta{color:var(--faint);font-size:13.5px;margin:0 0 34px}
+  article h2{font-size:clamp(22px,3.2vw,28px);margin:48px 0 10px}
+  article h3{font-size:19px;margin:28px 0 6px}
+  article p,article li{color:#c4cad6}
+  article li{margin:6px 0}
+  article strong{color:var(--fg)}
+
+  .callout{background:var(--bg-soft);border:1px solid var(--line);border-left:3px solid var(--sage);
+           border-radius:12px;padding:16px 20px;margin:22px 0}
+  .callout p{margin:0}
+
+  .shot{margin:26px 0}
+  .shot img{width:100%;height:auto;display:block;border-radius:16px;
+            border:1px solid var(--line);background:#0b0d12}
+  .shot figcaption{color:var(--faint);font-size:13.5px;margin-top:10px;text-align:center}
+
+  .table{overflow-x:auto;margin:20px 0;border:1px solid var(--line);border-radius:12px}
+  table{border-collapse:collapse;width:100%;font-size:15px;min-width:560px}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;background:var(--bg-soft);font-size:13.5px;
+     text-transform:uppercase;letter-spacing:.05em}
+  tr:last-child td{border-bottom:0}
+  td{color:#c4cad6}
+  tr.us td{background:rgba(143,207,189,.06)}
+  tr.us td:first-child{color:var(--sage);font-weight:600}
+  .note{color:var(--faint);font-size:13.5px}
+
+  pre{background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;
+      padding:16px 18px;overflow-x:auto;margin:0 0 14px;color:var(--fg)}
+  pre .c{color:var(--faint)}
+  pre .p{color:var(--sage)}
+
+  .cta{background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);
+       padding:26px;margin:52px 0 10px}
+  .cta h2{margin:0 0 8px}
+  .cta p{color:var(--muted);margin:0 0 16px}
+
+  details{border-bottom:1px solid var(--line);padding:14px 0}
+  summary{cursor:pointer;font-weight:600;font-size:16px;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"+";color:var(--sage);margin-right:11px;font-weight:400}
+  details[open] summary::before{content:"–"}
+  details p{color:var(--muted);margin:10px 0 2px;font-size:15.5px}
+
+  footer{padding:46px 0 60px;border-top:1px solid var(--line);margin-top:60px;
+         color:var(--faint);font-size:14px;text-align:center}
+  footer a{color:var(--muted)}
+  footer nav{display:flex;gap:8px 20px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/favicon.svg" width="28" height="28" alt="">MacBreak</a>
+    <a class="btn" href="/#install">Install free</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="/">MacBreak</a> › <span aria-current="page">Safe Eyes for Mac</span></nav>
+  <article>
+    <h1>Safe Eyes for Mac? Here's the native alternative</h1>
+    <p class="lede">Short answer: Safe Eyes doesn't run on macOS — it's a Linux app. If you want the same thing on a Mac, breaks that take over the screen instead of a notification you swat away, MacBreak is a free, open-source, native equivalent.</p>
+    <p class="meta">Updated 9 October 2026 · 6 minute read</p>
+
+    <h2 id="does-it-run">Does Safe Eyes work on macOS?</h2>
+    <p><a href="https://github.com/slgobinath/SafeEyes" rel="noopener">Safe Eyes</a> is a well-loved break reminder for Linux, written in Python with GTK 4 and licensed under the GPL-3.0. It ships through Linux channels — distribution packages, the Ubuntu PPA, the Arch AUR, Flathub and PyPI — and its installation guide covers Linux distributions only. There is no official macOS version.</p>
+    <p>That leaves Mac users who liked Safe Eyes on a desktop machine, or who just heard it recommended, looking for something that behaves the same way on macOS.</p>
+
+    <h2 id="mapping">What carries over from Safe Eyes</h2>
+    <p>Most of what Safe Eyes does has a direct counterpart in MacBreak:</p>
+    <div class="table"><table>
+      <thead><tr><th>In Safe Eyes</th><th>In MacBreak</th></tr></thead>
+      <tbody>
+        <tr><td>Short breaks</td><td>Look-away breaks — every 30 minutes for 30 seconds by default; set them to 20 and 20 for the <a href="/20-20-20-rule-mac">20-20-20 rule</a></td></tr>
+        <tr><td>Long breaks</td><td>Walk breaks — every 2 hours for 10 minutes by default</td></tr>
+        <tr><td>Full-screen break window</td><td>An overlay on every display, across all Spaces and above full-screen apps</td></tr>
+        <tr><td>Strict break</td><td>Always on: there's no way to end a break early, only Snooze, which defers it</td></tr>
+        <tr><td>Postpone</td><td>Snooze, 10 minutes by default</td></tr>
+        <tr><td>Break exercises</td><td>Ten eye prompts and eight movement prompts, drawn at random</td></tr>
+        <tr><td>Smart pause</td><td>No idle tracking, but locking your screen for 5 minutes or more counts as a break and restarts both clocks</td></tr>
+        <tr><td>Plugins</td><td>None. MacBreak is deliberately small: about 1,200 lines of Swift</td></tr>
+      </tbody>
+    </table></div>
+    <p>One difference worth knowing: when a MacBreak break is over, the overlay closes on its own. There's nothing to click to get your screen back.</p>
+
+    <h2 id="compared">Break reminder apps for Mac, compared</h2>
+    <p>Safe Eyes isn't the only option people look for. Here's how the usual names line up on a Mac:</p>
+    <div class="table"><table>
+      <thead><tr><th>App</th><th>Runs on macOS</th><th>Built with</th><th>Price</th><th>Open source</th></tr></thead>
+      <tbody>
+        <tr class="us"><td>MacBreak</td><td>Yes, macOS 13+ (Apple Silicon and Intel)</td><td>Swift / AppKit</td><td>Free</td><td>Yes, MIT</td></tr>
+        <tr><td>Safe Eyes</td><td>No — Linux only</td><td>Python / GTK 4</td><td>Free</td><td>Yes, GPL-3.0</td></tr>
+        <tr><td>Stretchly</td><td>Yes, macOS 12+; also Windows and Linux</td><td>Electron</td><td>Free</td><td>Yes</td></tr>
+        <tr><td>BreakTimer</td><td>Yes; also Windows and Linux</td><td>Electron</td><td>Free</td><td>Yes, GPL-3.0</td></tr>
+        <tr><td>LookAway</td><td>Yes</td><td>—</td><td>Paid</td><td>No</td></tr>
+        <tr><td>Time Out</td><td>Yes</td><td>—</td><td>Free</td><td>No</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">From each project's own site and repository as of October 2026. Check them for the latest.</p>
+
+    <h3>When another app is the better pick</h3>
+    <p>If you switch between a Mac and Windows or Linux and want one tool everywhere, Stretchly or BreakTimer run on all three. If you want breaks to pause automatically when you step away from the keyboard, Stretchly and Safe Eyes watch for idle time and MacBreak doesn't. On Linux, Safe Eyes is still an excellent choice.</p>
+
+    <h2 id="why-macbreak">Why MacBreak on a Mac</h2>
+    <ul>
+      <li><strong>Native.</strong> AppKit, no Electron, around 10 MB of memory while it waits. A break reminder shouldn't be the heaviest thing running.</li>
+      <li><strong>Breaks you can't click away.</strong> No Done button during the rest. The countdown is the point.</li>
+      <li><strong>Nothing to click when it's over.</strong> The overlay fades by itself at 00:00 and the clocks restart.</li>
+      <li><strong>Every display, every Space.</strong> It sits above full-screen apps, takes focus back if another app grabs it, and swallows keystrokes.</li>
+      <li><strong>It knows you've rested.</strong> A screen lock of five minutes or more counts as a break.</li>
+      <li><strong>Quiet menu bar.</strong> A single solid icon until a break is close.</li>
+      <li><strong>Free and private.</strong> MIT licensed, no account, no telemetry, no network code.</li>
+    </ul>
+
+    <h2 id="settings">Moving your Safe Eyes settings over</h2>
+    <p>Open MacBreak's Preferences (Cmd-Space, type <em>macbreak</em>). Copy your Safe Eyes short-break interval and length into <strong>Look away every</strong> and <strong>Look away for</strong>, and your long-break ones into <strong>Walk break every</strong> and <strong>Walk for</strong>. Note that MacBreak counts the long break in minutes. Tick <strong>Start at login</strong> and save.</p>
+
+    <div class="cta">
+      <h2>Full-screen eye breaks, native on your Mac</h2>
+      <p>Free, open source, native Swift. macOS 13+ on Apple Silicon and Intel.</p>
+<pre><span class="p">brew</span> install --cask deepakk33/tap/macbreak</pre>
+      <p style="margin:0"><a href="/#install">Other ways to install</a> · <a href="https://github.com/deepakk33/macbreak">Source on GitHub</a></p>
+    </div>
+
+    <h2 id="faq">Questions</h2>
+    <details><summary>Is there an official Safe Eyes for Mac?</summary>
+      <p>No. Safe Eyes is developed for Linux, and its installation guide covers Linux distributions only. MacBreak is a separate, independent project that brings the same kind of full-screen breaks to macOS.</p></details>
+    <details><summary>Is MacBreak affiliated with Safe Eyes?</summary>
+      <p>No. MacBreak is an independent open-source project. Safe Eyes is mentioned here only to help Mac users find an equivalent.</p></details>
+    <details><summary>Is MacBreak free like Safe Eyes?</summary>
+      <p>Yes. It is free and open source under the MIT licence, with no paid tier, no account and no ads.</p></details>
+    <details><summary>Does MacBreak run on Windows or Linux?</summary>
+      <p>No, it is macOS only. On Linux, Safe Eyes is a great choice; for Windows, Stretchly and BreakTimer are cross-platform.</p></details>
+    <details><summary>What's the best Stretchly alternative for Mac?</summary>
+      <p>If you want a native app rather than an Electron one, MacBreak covers the same core — short eye breaks, longer movement breaks, breaks that can't be ended early — in around 10 MB of memory.</p></details>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <nav aria-label="Site">
+      <a href="/">MacBreak</a>
+      <a href="/20-20-20-rule-mac">The 20-20-20 rule on Mac</a>
+      <a href="/safe-eyes-for-mac">Safe Eyes for Mac</a>
+      <a href="https://github.com/deepakk33/macbreak/releases">Releases</a>
+    </nav>
+    <p>MIT licensed · <a href="https://github.com/deepakk33/macbreak">github.com/deepakk33/macbreak</a></p>
+    <p style="margin-top:6px">Now go look at something far away.</p>
+  </div>
+</footer>
+
+</body>
+</html>
