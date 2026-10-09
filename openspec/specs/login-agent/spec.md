@@ -18,7 +18,37 @@ path of the running executable.
 #### Scenario: Installing from preferences
 
 - **WHEN** the user ticks "Start at login" and saves
-- **THEN** the plist is written with the current executable path and bootstrapped into the GUI domain
+- **THEN** the plist is written with the current executable path, and launchd loads it at the next login
+
+### Requirement: Enabling Start At Login Does Not Start A Second Copy
+
+Ticking "Start at login" SHALL write the plist without bootstrapping it.
+Bootstrapping would make launchd start a second copy immediately; that copy
+defers to the running one and exits, and `KeepAlive` respawns it about every ten
+seconds, each time raising the preferences window.
+
+#### Scenario: Ticking the box while MacBreak is running
+
+- **WHEN** the user ticks "Start at login" and saves while MacBreak is running
+- **THEN** exactly one MacBreak process exists afterwards and no `com.user.macbreak` job is loaded until the next login
+
+### Requirement: Start At Login Survives Package Upgrades
+
+The user's choice SHALL be stored in preferences as well as expressed by the
+plist. On launch from an app bundle, an existing plist SHALL mark the choice as
+on, and a missing plist SHALL be rewritten when the choice is on — because
+`brew upgrade` runs the old cask's uninstall, which deletes the agent, before it
+reopens the new app. A bare demo binary SHALL never write the agent.
+
+#### Scenario: Upgrading with Homebrew
+
+- **WHEN** start at login is on and `brew upgrade --cask macbreak` replaces the app and reopens it
+- **THEN** the plist is back in `~/Library/LaunchAgents/`, pointing at the installed app
+
+#### Scenario: Running a demo build
+
+- **WHEN** `make demo-eye` runs the bare binary while the choice is on and no plist exists
+- **THEN** no plist is written
 
 ### Requirement: User Agent, Not System Daemon
 
@@ -33,13 +63,20 @@ have.
 
 ### Requirement: Uninstall Removes Job And File
 
-Unticking "Start at login" SHALL boot the job out of the GUI domain and delete
-the plist.
+Unticking "Start at login" SHALL delete the plist and record the choice as off.
+It SHALL boot the job out of the GUI domain only when the running process is not
+that job, since booting out its own job would kill the app the user is looking
+at.
 
 #### Scenario: Disabling start at login
 
-- **WHEN** the user unticks "Start at login" and saves
+- **WHEN** the user unticks "Start at login" and saves in a copy launched from Spotlight
 - **THEN** the job is no longer listed by launchctl and the plist file is gone
+
+#### Scenario: Disabling start at login under launchd
+
+- **WHEN** the user unticks "Start at login" and saves in a copy started by launchd
+- **THEN** the plist file is gone and MacBreak keeps running until quit
 
 ### Requirement: Quit Defeats KeepAlive
 

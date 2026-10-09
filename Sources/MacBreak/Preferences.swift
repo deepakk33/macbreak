@@ -28,6 +28,7 @@ enum Prefs {
     private static let snoozeKey = "macbreak.snoozeMinutes"
     private static let lockResetKey = "macbreak.lockResetMinutes"
     private static let statusTimerKey = "macbreak.statusTimerMinutes"
+    private static let startAtLoginKey = "macbreak.startAtLogin"
 
     private static func read(_ key: String, fallback: Int) -> Int {
         let stored = UserDefaults.standard.integer(forKey: key)
@@ -72,6 +73,13 @@ enum Prefs {
     static var statusTimerMinutes: Int {
         get { read(statusTimerKey, fallback: Defaults.statusTimerMinutes) }
         set { write(statusTimerKey, newValue) }
+    }
+
+    /// Whether the user wants the login agent, kept apart from the agent file
+    /// itself because package upgrades delete that file.
+    static var startAtLogin: Bool {
+        get { UserDefaults.standard.bool(forKey: startAtLoginKey) }
+        set { UserDefaults.standard.set(newValue, forKey: startAtLoginKey) }
     }
 
     /// Testing hooks, so the overlays can be demonstrated without waiting.

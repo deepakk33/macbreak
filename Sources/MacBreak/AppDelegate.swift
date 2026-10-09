@@ -37,6 +37,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
+        LaunchAgent.restoreIfWanted()
         buildStatusItem()
         observeScreenLock()
         observeShowPreferences()
@@ -351,6 +352,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     @objc private func snoozeTapped() {
         guard let snoozed = activeKind else { return }
+        log("break snoozed: \(snoozed == .walk ? "walk" : "look-away")")
         closeOverlay()
         if snoozed == .walk {
             rescheduleWalk(after: Prefs.snoozeInterval)

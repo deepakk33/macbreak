@@ -16,6 +16,9 @@ enum LaunchAgent {
         ProcessInfo.processInfo.environment["XPC_SERVICE_NAME"]?.contains(Const.agentLabel) ?? false
     }
 
+    /// Writes the plist and stops there: launchd loads it at the next login.
+    /// Bootstrapping it now would start a second copy, which sees this one,
+    /// exits, and is respawned by KeepAlive every ten seconds, forever.
     static func install() {
         guard let executable = Bundle.main.executablePath else { return }
         let plist: [String: Any] = [
@@ -33,15 +36,33 @@ enum LaunchAgent {
                                                              format: .xml,
                                                              options: 0) else { return }
         try? data.write(to: plistURL)
-        // Already-running instance keeps running; this only registers it for next login.
-        run(["bootstrap", "gui/\(getuid())", plistURL.path])
+        Prefs.startAtLogin = true
         log("launch agent installed")
     }
 
     static func uninstall() {
-        run(["bootout", "gui/\(getuid())/\(Const.agentLabel)"])
         try? FileManager.default.removeItem(at: plistURL)
+        Prefs.startAtLogin = false
+        // Booting out our own job would kill this very process. With the file
+        // gone, launchd simply will not start it at the next login.
+        if !isManagedByLaunchd {
+            run(["bootout", "gui/\(getuid())/\(Const.agentLabel)"])
+        }
         log("launch agent removed")
+    }
+
+    /// `brew upgrade` runs the old cask's uninstall, which deletes the agent,
+    /// then reopens the new app. The choice is remembered separately from the
+    /// file, so the agent comes back instead of silently switching off.
+    static func restoreIfWanted() {
+        // A bare demo binary must never become the login item.
+        guard Bundle.main.bundleIdentifier != nil else { return }
+        if isInstalled {
+            Prefs.startAtLogin = true
+        } else if Prefs.startAtLogin {
+            log("launch agent missing - restoring it")
+            install()
+        }
     }
 
     /// Boots the launchd job out, which also terminates this process.

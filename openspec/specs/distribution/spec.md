@@ -71,6 +71,17 @@ whose checksum the cask pins.
 - **WHEN** version 1.2.0 is released
 - **THEN** a `MacBreak-1.2.0.zip` asset is attached and its SHA-256 appears in the cask
 
+### Requirement: Builds Run On Every Supported Mac
+
+The build SHALL produce a universal binary for `arm64` and `x86_64`, each slice
+targeting the `LSMinimumSystemVersion` declared in `Info.plist`, rather than
+whatever CPU and macOS version the build machine happens to have.
+
+#### Scenario: Building a release on a newer Mac
+
+- **WHEN** a release is built on an Apple Silicon Mac running a newer macOS
+- **THEN** the binary contains both slices and each declares a minimum of macOS 13.0
+
 ### Requirement: Explainer Page
 
 The project SHALL ship a single self-contained HTML page under `site/`,

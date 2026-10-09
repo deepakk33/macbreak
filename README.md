@@ -110,6 +110,9 @@ brew install --cask deepakk33/tap/macbreak
 open -a MacBreak     # then tick "Start at login"
 ```
 
+"Start at login" survives `brew upgrade`: the app puts its login agent back
+after the upgrade removes it.
+
 ### One line, built from source
 
 ```bash
@@ -132,8 +135,9 @@ All three compile the sources (or, with Homebrew, fetch a release build), put
 `MacBreak.app` in `/Applications`, and leave you with a menu bar app that starts
 at login.
 
-**Requirements:** macOS 13+ and Swift tooling. `xcode-select --install` is
-enough — the full Xcode app is not needed, and there is no `.xcodeproj` here.
+**Requirements:** macOS 13+ on Apple Silicon or Intel — every build is
+universal — and, to build from source, Swift tooling. `xcode-select --install`
+is enough — the full Xcode app is not needed, and there is no `.xcodeproj` here.
 
 ## Use
 
