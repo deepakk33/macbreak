@@ -26,7 +26,7 @@
 <meta name="twitter:image" content="https://macbreak.vercel.app/assets/og-image.jpg">
 <meta name="twitter:image:alt" content="MacBreak's eye-rest overlay: Rest your eyes, with a 00:24 countdown inside a calm sea-glass dial.">
 
-<meta name="theme-color" content="#0d0f14">
+<meta name="theme-color" content="#0a0c12">
 <meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-title" content="MacBreak">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
@@ -46,9 +46,7 @@
    "name": "MacBreak",
    "description": "Free, open-source eye break reminder for Mac that follows the 20-20-20 rule.",
    "inLanguage": "en",
-   "publisher": {
-    "@id": "https://macbreak.vercel.app/#author"
-   }
+   "publisher": { "@id": "https://macbreak.vercel.app/#author" }
   },
   {
    "@type": "Person",
@@ -78,17 +76,9 @@
    "releaseNotes": "https://github.com/deepakk33/macbreak/releases",
    "license": "https://opensource.org/licenses/MIT",
    "isAccessibleForFree": true,
-   "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-   },
-   "author": {
-    "@id": "https://macbreak.vercel.app/#author"
-   },
-   "sameAs": [
-    "https://github.com/deepakk33/macbreak"
-   ],
+   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+   "author": { "@id": "https://macbreak.vercel.app/#author" },
+   "sameAs": ["https://github.com/deepakk33/macbreak"],
    "featureList": [
     "20-20-20 eye break reminders",
     "Walk breaks every 2 hours",
@@ -107,360 +97,549 @@
    "@type": "FAQPage",
    "@id": "https://macbreak.vercel.app/#faq",
    "mainEntity": [
-    {
-     "@type": "Question",
-     "name": "Does it work with multiple monitors?",
-     "acceptedAnswer": {
-      "@type": "Answer",
-      "text": "Yes. Every display is covered, each with its own countdown and buttons."
-     }
-    },
-    {
-     "@type": "Question",
-     "name": "Is MacBreak free?",
-     "acceptedAnswer": {
-      "@type": "Answer",
-      "text": "Yes. It is free and open source under the MIT licence, with no paid tier, no account and no ads."
-     }
-    },
-    {
-     "@type": "Question",
-     "name": "Does it work on Intel Macs and older macOS?",
-     "acceptedAnswer": {
-      "@type": "Answer",
-      "text": "Yes. Every build is universal — Apple Silicon and Intel — and runs on macOS 13 Ventura or later."
-     }
-    },
-    {
-     "@type": "Question",
-     "name": "Is there a version of Safe Eyes for Mac?",
-     "acceptedAnswer": {
-      "@type": "Answer",
-      "text": "Not officially: Safe Eyes is built for Linux. MacBreak covers the same ground natively on macOS — full-screen eye breaks, longer movement breaks, and breaks that can't be dismissed early. Read the comparison."
-     }
-    },
-    {
-     "@type": "Question",
-     "name": "How do I follow the 20-20-20 rule on a Mac?",
-     "acceptedAnswer": {
-      "@type": "Answer",
-      "text": "Install MacBreak, open Preferences, and set \"Look away every\" to 20 minutes and \"Look away for\" to 20 seconds. Every 20 minutes the screen asks you to look at something at least 20 feet away. More on the rule."
-     }
-    },
-    {
-     "@type": "Question",
-     "name": "Does it phone home?",
-     "acceptedAnswer": {
-      "@type": "Answer",
-      "text": "No. There is no network code in the repository — you can check. No account, no analytics, nothing leaves your machine."
-     }
-    },
-    {
-     "@type": "Question",
-     "name": "Is it code-signed?",
-     "acceptedAnswer": {
-      "@type": "Answer",
-      "text": "Not yet. The Homebrew cask clears the download quarantine for you. Building from source sidesteps the question entirely."
-     }
-    },
-    {
-     "@type": "Question",
-     "name": "How do water reminders work?",
-     "acceptedAnswer": {
-      "@type": "Answer",
-      "text": "Off by default. Enable in Preferences and MacBreak shows a 15-second overlay every 45 minutes (configurable). Tap Yes to drink and reset the timer, or Skip to get reminded sooner. All data stays on your machine."
-     }
-    },
-    {
-     "@type": "Question",
-     "name": "Can I use it for eyes only?",
-     "acceptedAnswer": {
-      "@type": "Answer",
-      "text": "Set the walk interval very high in Preferences, and it effectively disappears."
-     }
-    },
-    {
-     "@type": "Question",
-     "name": "What if I'm in a meeting?",
-     "acceptedAnswer": {
-      "@type": "Answer",
-      "text": "Snooze, or Pause from the menu bar. Pause clears both clocks until you resume."
-     }
-    },
-    {
-     "@type": "Question",
-     "name": "How do I get rid of it?",
-     "acceptedAnswer": {
-      "@type": "Answer",
-      "text": "brew uninstall --cask macbreak, or make uninstall from the source checkout. Both stop it and remove the login agent."
-     }
-    },
-    {
-     "@type": "Question",
-     "name": "Why not Electron?",
-     "acceptedAnswer": {
-      "@type": "Answer",
-      "text": "A break reminder that idles at 200 MB is its own kind of problem. This is AppKit — about 1,200 lines of Swift, around 10 MB of memory, no dependencies, no runtime."
-     }
-    }
+    {"@type":"Question","name":"Does it work with multiple monitors?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every display is covered, each with its own countdown and buttons."}},
+    {"@type":"Question","name":"Is MacBreak free?","acceptedAnswer":{"@type":"Answer","text":"Yes. It is free and open source under the MIT licence, with no paid tier, no account and no ads."}},
+    {"@type":"Question","name":"Does it work on Intel Macs and older macOS?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every build is universal — Apple Silicon and Intel — and runs on macOS 13 Ventura or later."}},
+    {"@type":"Question","name":"Is there a version of Safe Eyes for Mac?","acceptedAnswer":{"@type":"Answer","text":"Not officially: Safe Eyes is built for Linux. MacBreak covers the same ground natively on macOS — full-screen eye breaks, longer movement breaks, and breaks that can't be dismissed early. Read the comparison."}},
+    {"@type":"Question","name":"How do I follow the 20-20-20 rule on a Mac?","acceptedAnswer":{"@type":"Answer","text":"Install MacBreak, open Preferences, and set \"Look away every\" to 20 minutes and \"Look away for\" to 20 seconds. Every 20 minutes the screen asks you to look at something at least 20 feet away. More on the rule."}},
+    {"@type":"Question","name":"Does it phone home?","acceptedAnswer":{"@type":"Answer","text":"No. There is no network code in the repository — you can check. No account, no analytics, nothing leaves your machine."}},
+    {"@type":"Question","name":"Is it code-signed?","acceptedAnswer":{"@type":"Answer","text":"Not yet. The Homebrew cask clears the download quarantine for you. Building from source sidesteps the question entirely."}},
+    {"@type":"Question","name":"How do water reminders work?","acceptedAnswer":{"@type":"Answer","text":"Off by default. Enable in Preferences and MacBreak shows a 15-second overlay every 45 minutes (configurable). Tap Yes to drink and reset the timer, or Skip to get reminded sooner. All data stays on your machine."}},
+    {"@type":"Question","name":"Can I use it for eyes only?","acceptedAnswer":{"@type":"Answer","text":"Set the walk interval very high in Preferences, and it effectively disappears."}},
+    {"@type":"Question","name":"What if I'm in a meeting?","acceptedAnswer":{"@type":"Answer","text":"Snooze, or Pause from the menu bar. Pause clears both clocks until you resume."}},
+    {"@type":"Question","name":"How do I get rid of it?","acceptedAnswer":{"@type":"Answer","text":"brew uninstall --cask macbreak, or make uninstall from the source checkout. Both stop it and remove the login agent."}},
+    {"@type":"Question","name":"Why not Electron?","acceptedAnswer":{"@type":"Answer","text":"A break reminder that idles at 200 MB is its own kind of problem. This is AppKit — about 1,200 lines of Swift, around 10 MB of memory, no dependencies, no runtime."}}
    ]
   }
  ]
 }
 </script>
 <style>
-  :root{
-    --bg:#0d0f14; --bg-soft:#13161d; --line:#222733;
-    --fg:#e8eaef; --muted:#8e97a8; --faint:#798193;
-    --sage:#8fcfbd; --sand:#e8c28c; --radius:14px;
-    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
-    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Rounded","Segoe UI",system-ui,sans-serif;
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
-       line-height:1.65;-webkit-font-smoothing:antialiased;font-size:17px}
-  .wrap{max-width:860px;margin:0 auto;padding:0 24px}
-  a{color:var(--sage)}
-  h1,h2,h3{line-height:1.2;letter-spacing:-.02em;font-weight:600}
-  code,pre{font-family:var(--mono);font-size:14px}
+:root{
+  --bg:#0a0c12;--bg-card:rgba(255,255,255,0.035);--border:rgba(255,255,255,0.07);
+  --text:#e8eaef;--muted:#8e97a8;--faint:#5a6275;
+  --sage:#8fcfbd;--sand:#e8c28c;--blue:#72b8f4;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Rounded","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);
+     line-height:1.65;-webkit-font-smoothing:antialiased;font-size:17px;overflow-x:hidden}
+a{color:var(--sage);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3{line-height:1.15;letter-spacing:-.03em;font-weight:700}
+code,pre{font-family:var(--mono);font-size:14px}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
 
-  /* hero */
-  header{padding:96px 0 72px;text-align:center;
-         background:radial-gradient(900px 420px at 50% -12%,rgba(143,207,189,.10),transparent 70%)}
-  .glyph{display:block;width:64px;height:64px;margin:0 auto 22px;border-radius:15px}
-  h1{font-size:clamp(34px,6.2vw,56px);margin:0 0 18px}
-  .tag{font-size:clamp(17px,2.4vw,21px);color:var(--muted);max-width:40ch;margin:0 auto 34px}
-  .tag b{color:var(--fg);font-weight:600}
-  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
-  .btn{display:inline-block;padding:12px 22px;border-radius:11px;text-decoration:none;
-       font-weight:600;font-size:15px;border:1px solid transparent;transition:.15s}
-  .btn-primary{background:var(--sage);color:#0b1a16}
-  .btn-primary:hover{filter:brightness(1.08)}
-  .btn-ghost{border-color:var(--line);color:var(--fg)}
-  .btn-ghost:hover{border-color:var(--faint);background:var(--bg-soft)}
-  .sub{color:var(--faint);font-size:13.5px}
+/* ─── Three.js canvas ─── */
+#scene{position:fixed;inset:0;z-index:0;pointer-events:none}
 
-  /* sections */
-  section{padding:60px 0;border-top:1px solid var(--line)}
-  h2{font-size:clamp(23px,3.4vw,30px);margin:0 0 10px}
-  .lede{color:var(--muted);margin:0 0 30px;max-width:62ch}
+/* ─── Content layer ─── */
+.content{position:relative;z-index:1}
 
-  /* break cards */
-  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .card{background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
-  .card .k{font-size:26px;margin-bottom:10px}
-  .card h3{margin:0 0 4px;font-size:19px}
-  .card .when{color:var(--faint);font-size:14px;font-family:var(--mono);margin-bottom:12px}
-  .card p{margin:0;color:var(--muted);font-size:15.5px}
-  .card.eye h3{color:var(--sage)} .card.walk h3{color:var(--sand)} .card.water h3{color:#72b8f4}
-  .card.water{grid-column:1/-1}
+/* ─── Hero ─── */
+header{min-height:100vh;display:flex;align-items:center;justify-content:center;
+       text-align:center;padding:80px 24px 60px;position:relative}
+header .logo{width:72px;height:72px;border-radius:17px;margin-bottom:28px;
+             filter:drop-shadow(0 0 30px rgba(143,207,189,0.3))}
+h1{font-size:clamp(36px,7vw,68px);margin-bottom:20px;
+   background:linear-gradient(135deg,var(--sage),var(--blue));
+   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.tagline{font-size:clamp(18px,2.8vw,24px);color:var(--muted);max-width:32ch;
+         margin:0 auto 40px;font-weight:400}
+.cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.btn{display:inline-block;padding:14px 28px;border-radius:12px;font-weight:600;
+     font-size:16px;border:1px solid transparent;transition:all .25s;cursor:pointer}
+.btn-primary{background:var(--sage);color:#0b1a16}
+.btn-primary:hover{filter:brightness(1.12);transform:translateY(-2px);box-shadow:0 8px 30px rgba(143,207,189,0.25);text-decoration:none}
+.btn-try{background:rgba(114,184,244,0.12);color:var(--blue);border-color:rgba(114,184,244,0.25)}
+.btn-try:hover{background:rgba(114,184,244,0.2);transform:translateY(-2px);text-decoration:none}
+.btn-ghost{border-color:var(--border);color:var(--text)}
+.btn-ghost:hover{border-color:var(--faint);background:var(--bg-card);text-decoration:none}
+.hero-sub{color:var(--faint);font-size:14px}
+.scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+             color:var(--faint);font-size:24px;animation:float 2s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
 
-  /* screenshots */
-  .shot{margin:0 0 26px}
-  .shot img{width:100%;height:auto;display:block;border-radius:16px;
-            border:1px solid var(--line);background:#0b0d12}
-  .shot figcaption{color:var(--faint);font-size:13.5px;margin-top:11px;text-align:center}
-  .shot figcaption b{color:var(--muted);font-weight:600}
+/* ─── Sections ─── */
+section{padding:100px 0}
+.section-border{border-top:1px solid var(--border)}
+h2{font-size:clamp(26px,4vw,42px);margin-bottom:14px}
+.lede{color:var(--muted);margin-bottom:36px;max-width:56ch;font-size:18px;line-height:1.7}
 
-  /* lists */
-  ul.plain{list-style:none;padding:0;margin:0}
-  ul.plain li{padding:13px 0;border-bottom:1px solid var(--line);color:var(--muted);font-size:15.5px}
-  ul.plain li:last-child{border-bottom:0}
-  ul.plain b{color:var(--fg);font-weight:600}
+/* ─── Stats ribbon ─── */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:0;padding:60px 0}
+.stat{text-align:center;padding:32px 16px;background:var(--bg-card);
+      border:1px solid var(--border);border-radius:20px;
+      backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.stat-num{font-size:clamp(36px,6vw,56px);font-weight:800;
+          background:linear-gradient(135deg,var(--sage),var(--blue));
+          -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-unit{font-size:clamp(20px,3vw,28px);font-weight:700;color:var(--text)}
+.stat-label{display:block;color:var(--muted);font-size:14px;margin-top:8px}
 
-  /* code */
-  pre{background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;
-      padding:16px 18px;overflow-x:auto;margin:0 0 14px}
-  pre .c{color:var(--faint)}
-  pre .p{color:var(--sage)}
-  .step{color:var(--faint);font-size:13.5px;text-transform:uppercase;
-        letter-spacing:.08em;margin:26px 0 9px;font-weight:600}
+/* ─── Break cards (glassmorphism) ─── */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:20px;
+      padding:32px 28px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+      transition:transform .35s,box-shadow .35s,border-color .35s;position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;
+              border-radius:20px 20px 0 0;opacity:0;transition:opacity .35s}
+.card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,0.35)}
+.card:hover::before{opacity:1}
+.card .icon{font-size:36px;margin-bottom:16px;display:block}
+.card h3{font-size:22px;margin-bottom:6px}
+.card .timing{color:var(--faint);font-family:var(--mono);font-size:13px;margin-bottom:14px}
+.card p{color:var(--muted);font-size:15px;line-height:1.65;margin:0}
+.card.eye h3{color:var(--sage)} .card.eye::before{background:var(--sage)}
+.card.walk h3{color:var(--sand)} .card.walk::before{background:var(--sand)}
+.card.water h3{color:var(--blue)} .card.water::before{background:var(--blue)}
 
-  /* menubar strip */
-  .bar{display:flex;align-items:center;gap:14px;background:var(--bg-soft);
-       border:1px solid var(--line);border-radius:10px;padding:12px 16px;
-       font-family:var(--mono);font-size:14px;margin-bottom:10px;flex-wrap:wrap}
-  .bar .lbl{color:var(--faint);font-family:var(--sans);font-size:14px}
-  .bar .mb{display:inline-flex;align-items:center;gap:7px;color:#fff;min-width:86px}
-  .bar .ico{width:21px;height:14px}
-  .bar .ico.walk{height:18px}
+/* ─── Demo section ─── */
+.demo-section{text-align:center}
+.demo-section .lede{margin-left:auto;margin-right:auto}
+.demo-shots{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px}
+.demo-shots img{width:100%;height:auto;border-radius:16px;border:1px solid var(--border);
+                transition:transform .3s;display:block}
+.demo-shots img:hover{transform:scale(1.02)}
+.demo-shots figcaption{color:var(--faint);font-size:13px;margin-top:10px;text-align:center}
 
-  /* faq */
-  details{border-bottom:1px solid var(--line);padding:15px 0}
-  summary{cursor:pointer;font-weight:600;font-size:16px;list-style:none}
-  summary::-webkit-details-marker{display:none}
-  summary::before{content:"+";color:var(--sage);margin-right:11px;font-weight:400}
-  details[open] summary::before{content:"–"}
-  details p{color:var(--muted);margin:11px 0 2px;font-size:15.5px}
+/* ─── Features grid ─── */
+.features{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.feat{padding:24px;border-radius:16px;background:var(--bg-card);border:1px solid var(--border)}
+.feat b{color:var(--text);display:block;margin-bottom:4px;font-size:16px}
+.feat span{color:var(--muted);font-size:14.5px;line-height:1.6}
 
-  footer{padding:46px 0 60px;border-top:1px solid var(--line);
-         color:var(--faint);font-size:14px;text-align:center}
-  footer a{color:var(--muted)}
-  footer nav{display:flex;gap:8px 20px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+/* ─── Install ─── */
+pre{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:14px;
+    padding:18px 20px;overflow-x:auto;margin:0 0 14px}
+pre .c{color:var(--faint)} pre .p{color:var(--sage)}
+.step-label{color:var(--faint);font-size:13px;text-transform:uppercase;
+            letter-spacing:.1em;margin:28px 0 10px;font-weight:700}
 
-  @media(max-width:640px){
-    .cards{grid-template-columns:1fr}
-    header{padding:68px 0 54px}
-  }
+/* ─── FAQ ─── */
+details{border-bottom:1px solid var(--border);padding:18px 0}
+summary{cursor:pointer;font-weight:600;font-size:17px;list-style:none;
+        transition:color .2s}
+summary:hover{color:var(--sage)}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";color:var(--sage);margin-right:12px;font-weight:400;
+                font-size:20px;display:inline-block;transition:transform .2s}
+details[open] summary::before{content:"\2013"}
+details p{color:var(--muted);margin:12px 0 2px;font-size:15.5px;line-height:1.7}
+
+/* ─── Footer ─── */
+footer{padding:50px 0 70px;border-top:1px solid var(--border);
+       color:var(--faint);font-size:14px;text-align:center}
+footer a{color:var(--muted)}
+footer nav{display:flex;gap:8px 22px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+
+/* ─── Break demo overlay ─── */
+.break-demo{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;
+            justify-content:center;flex-direction:column;gap:20px;
+            opacity:0;pointer-events:none;transition:opacity .6s}
+.break-demo.active{opacity:1;pointer-events:auto}
+.break-demo .backdrop{position:absolute;inset:0;
+  background:rgba(10,12,18,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+.break-demo .demo-content{position:relative;text-align:center;max-width:500px;padding:0 24px}
+.break-demo .demo-heading{font-size:clamp(32px,6vw,52px);font-weight:600;margin-bottom:16px}
+.break-demo .demo-prompt{font-size:clamp(18px,3vw,26px);color:var(--text);font-weight:300;margin-bottom:32px}
+.break-demo .demo-ring{width:240px;height:240px;margin:0 auto 20px}
+.break-demo .demo-time{font-size:48px;font-weight:300;color:rgba(255,255,255,0.85);
+                        font-family:var(--mono);position:absolute;top:50%;left:50%;
+                        transform:translate(-50%,-50%)}
+.break-demo .demo-ring-wrap{position:relative;width:240px;height:240px;margin:0 auto 12px}
+.break-demo .demo-hint{color:var(--faint);font-size:15px;margin-bottom:28px}
+.break-demo .demo-btn{padding:14px 32px;border-radius:14px;font-size:17px;font-weight:600;
+                       border:none;cursor:pointer;color:var(--text);font-family:var(--sans);
+                       background:rgba(255,255,255,0.1);transition:background .2s}
+.break-demo .demo-btn:hover{background:rgba(255,255,255,0.18)}
+
+/* ─── Scroll reveal ─── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-d1{transition-delay:.1s} .reveal-d2{transition-delay:.2s} .reveal-d3{transition-delay:.3s}
+
+/* ─── Responsive ─── */
+@media(max-width:768px){
+  .cards{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr}
+  .demo-shots{grid-template-columns:1fr}
+  .features{grid-template-columns:1fr}
+  section{padding:70px 0}
+}
+@media(max-width:480px){
+  header{min-height:90vh;padding:60px 16px 40px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  #scene{display:none}
+  .scroll-hint{animation:none}
+}
 </style>
 </head>
 <body>
 
+<canvas id="scene"></canvas>
+
+<div class="content">
+
 <header>
-  <div class="wrap">
-    <img class="glyph" src="/favicon.svg" width="64" height="64" alt="MacBreak icon">
-    <h1>The eye break reminder<br>for Mac you can't click away</h1>
-    <p class="tag">MacBreak takes the screen when it's time to rest, and <b>gives it back when you've actually rested</b>.</p>
-    <div class="cta">
-      <a class="btn btn-primary" href="#install">Install</a>
+  <div>
+    <img class="logo" src="/favicon.svg" width="72" height="72" alt="MacBreak icon">
+    <h1>The break reminder<br>you can't click away</h1>
+    <p class="tagline">MacBreak takes the screen when it's time to rest, and gives it back when you've actually rested.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#install">Install free</a>
+      <button class="btn btn-try" id="try-btn" type="button">Try a break</button>
       <a class="btn btn-ghost" href="https://github.com/deepakk33/macbreak">View source</a>
     </div>
-    <p class="sub">macOS 13+ · Apple Silicon &amp; Intel · Native Swift · Free &amp; MIT · No account, no telemetry</p>
+    <p class="hero-sub">macOS 13+ &middot; Apple Silicon &amp; Intel &middot; Native Swift &middot; Free &amp; MIT &middot; No telemetry</p>
   </div>
+  <div class="scroll-hint" aria-hidden="true">&darr;</div>
 </header>
 
-<main>
-
-<section id="breaks">
+<!-- Stats -->
+<section class="section-border">
   <div class="wrap">
-    <h2>Two breaks and an optional nudge</h2>
-    <p class="lede">Eye strain comes from hours of fixed focus. Stiffness comes from hours of not moving. One timer can't fix both, so MacBreak runs two — and can remind you to drink water too.</p>
-    <div class="cards">
-      <div class="card eye">
-        <div class="k">👁️</div>
-        <h3>Rest your eyes</h3>
-        <div class="when">every 30 min · 30 seconds</div>
-        <p>The <a href="/20-20-20-rule-mac">20-20-20 rule</a>, enforced. Ten different prompts — look 20 metres away, roll your eyes slowly, palm them in the dark — so you keep reading instead of tuning it out. Want the rule exactly? Set 20 minutes and 20 seconds in Preferences.</p>
+    <div class="stats">
+      <div class="stat reveal">
+        <span class="stat-num" data-target="66">0</span><span class="stat-unit">%</span>
+        <span class="stat-label">less blinking at a screen</span>
       </div>
-      <div class="card walk">
-        <div class="k">🚶</div>
-        <h3>Time for a walk</h3>
-        <div class="when">every 2 hours · 10 minutes</div>
-        <p>Long enough to actually leave the chair. Take a lap, refill your water the long way, go look at the sky. Finishing one resets the eye clock too.</p>
+      <div class="stat reveal reveal-d1">
+        <span class="stat-num" data-target="8">0</span><span class="stat-unit"> hrs</span>
+        <span class="stat-label">average daily screen time</span>
       </div>
-      <div class="card water">
-        <div class="k">💧</div>
-        <h3>Drink water?</h3>
-        <div class="when">optional · every 45 min · skippable</div>
-        <p>Turn it on in Preferences and MacBreak asks if you'd like a sip. Say yes and the next reminder waits the full interval. Skip, and it nudges you again sooner. Your drink and skip history stays on your machine — the Preferences panel shows today's count and a weekly suggestion.</p>
+      <div class="stat reveal reveal-d2">
+        <span class="stat-num" data-target="75">0</span><span class="stat-unit">%</span>
+        <span class="stat-label">of your brain is water</span>
       </div>
     </div>
   </div>
 </section>
 
-<section>
+<!-- Break types -->
+<section id="breaks" class="section-border">
   <div class="wrap">
-    <h2>Why it works when notifications don't</h2>
-    <p class="lede">A banner you swat away without reading isn't a break. MacBreak covers every display and holds it.</p>
-    <figure class="shot">
-      <img src="/assets/overlay-eye.jpg" width="1600" height="1280" decoding="async"
-           alt="MacBreak's eye-rest overlay filling the screen: the heading Rest your eyes, the prompt Cup your palms over your eyes and sit in the dark, a 00:24 countdown inside a sea-glass dial that drains clockwise, and a Snooze 10 min button.">
-      <figcaption>The eye break. The dial drains as you rest, and at <b>00:00</b> the screen comes back on its own.</figcaption>
-    </figure>
-
-    <figure class="shot">
-      <img src="/assets/overlay-walk.jpg" width="1600" height="1280" loading="lazy" decoding="async"
-           alt="MacBreak's walk overlay: the heading Time for a walk, the prompt Step outside and look at the sky, a 09:57 countdown inside a sand-to-sage dial, and a Snooze 10 min button."
-           >
-      <figcaption>The walk break, ten minutes of it. Your desktop is still there, just out of reach.</figcaption>
-    </figure>
-
-    <ul class="plain" style="margin-top:30px">
-      <li><b>No way to end it early.</b> There's no Done button to reach for — the dial drains for the whole rest. The rest is the point, not the dismissal.</li>
-      <li><b>Nothing to click when it's over.</b> At 00:00 the overlay fades away by itself and your clocks restart, even if you're still out on the walk.</li>
-      <li><b>Every display, every Space</b>, above full-screen apps. It re-takes focus if another app grabs it, and swallows keystrokes so reflex typing goes nowhere.</li>
-      <li><b>Snooze is always one click away.</b> A nudge with teeth, not a kiosk lock.</li>
-    </ul>
+    <h2 class="reveal">Three ways to take care of yourself</h2>
+    <p class="lede reveal">Eye strain, stiffness, and dehydration are three different problems. One timer can't fix all of them.</p>
+    <div class="cards">
+      <div class="card eye reveal reveal-d1">
+        <span class="icon">👁</span>
+        <h3>Rest your eyes</h3>
+        <div class="timing">every 30 min &middot; 30 seconds</div>
+        <p>The <a href="/20-20-20-rule-mac">20-20-20 rule</a>, enforced. Ten different prompts so you keep reading instead of tuning it out.</p>
+      </div>
+      <div class="card walk reveal reveal-d2">
+        <span class="icon">🚶</span>
+        <h3>Time for a walk</h3>
+        <div class="timing">every 2 hours &middot; 10 minutes</div>
+        <p>Long enough to actually leave the chair. Take a lap, stretch, go look at the sky.</p>
+      </div>
+      <div class="card water reveal reveal-d3">
+        <span class="icon">💧</span>
+        <h3>Drink water?</h3>
+        <div class="timing">optional &middot; every 45 min &middot; skippable</div>
+        <p>Say yes and the timer resets. Skip, and it nudges you sooner. Your history stays local with weekly suggestions.</p>
+      </div>
+    </div>
   </div>
 </section>
 
-<section>
+<!-- How it works -->
+<section class="section-border demo-section">
   <div class="wrap">
-    <h2>It knows when you've already rested</h2>
-    <p class="lede">Lock your screen for lunch and MacBreak notices. Come back after five minutes or more and both clocks restart — no eye break thirty seconds after you sit down. Shorter locks leave the countdown alone.</p>
-    <h2 style="margin-top:44px">And it stays out of your menu bar</h2>
-    <p class="lede">A timer ticking all day is one more thing pulling at your attention. MacBreak shows one solid icon, tinted like macOS's own, and nothing else until a break is close.</p>
-    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-      <symbol id="i-eye" viewBox="0 0 24 16"><path fill="currentColor" fill-rule="evenodd" d="M12 0C6.5 0 2.2 3.6 0 8c2.2 4.4 6.5 8 12 8s9.8-3.6 12-8C21.8 3.6 17.5 0 12 0zm0 13a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-2.6a2.4 2.4 0 1 0 0-4.8 2.4 2.4 0 0 0 0 4.8z"/></symbol>
-      <symbol id="i-walk" viewBox="0 0 16 22"><circle cx="9.5" cy="2.4" r="2.4" fill="currentColor"/><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M8.6 6.6 7 13.4l-3 7M7.6 10l3.4 3.4.8 6.6M8.6 6.6 4.8 9.2 3.6 12.4M8.6 6.6l2.6 3.4 3 .8"/></symbol>
-    </svg>
-    <div class="bar"><span class="mb"><svg class="ico" aria-label="eye icon"><use href="#i-eye"/></svg></span><span class="lbl">more than 5 minutes away — quiet</span></div>
-    <div class="bar"><span class="mb"><svg class="ico" aria-label="eye icon"><use href="#i-eye"/></svg> 04:21</span><span class="lbl">under 5 minutes — now it speaks up</span></div>
-    <div class="bar"><span class="mb"><svg class="ico walk" aria-label="walking figure icon"><use href="#i-walk"/></svg> 01:58</span><span class="lbl">a walk is next</span></div>
+    <h2 class="reveal">Not a notification. A takeover.</h2>
+    <p class="lede reveal">A banner you swat away isn't a break. MacBreak covers every display and holds it until the rest is over.</p>
+    <div class="demo-shots reveal">
+      <figure>
+        <img src="/assets/overlay-eye.jpg" width="1600" height="1280" decoding="async"
+             alt="MacBreak's eye-rest overlay filling the screen with a sea-glass countdown dial.">
+        <figcaption>The eye break &mdash; a dial drains, then the screen comes back on its own.</figcaption>
+      </figure>
+      <figure>
+        <img src="/assets/overlay-walk.jpg" width="1600" height="1280" loading="lazy" decoding="async"
+             alt="MacBreak's walk overlay with a sand-to-sage countdown dial.">
+        <figcaption>The walk break &mdash; ten minutes. Your desktop is there, just out of reach.</figcaption>
+      </figure>
+    </div>
+    <button class="btn btn-try" id="try-btn-2" type="button" style="font-size:18px;padding:16px 36px">
+      Try a 10-second break right here
+    </button>
   </div>
 </section>
 
-<section id="switching">
+<!-- Features -->
+<section class="section-border">
   <div class="wrap">
-    <h2>Coming from Safe Eyes, Stretchly or another break timer?</h2>
-    <p class="lede">Safe Eyes is a much-loved break reminder, but it only runs on Linux. Stretchly and BreakTimer run on a Mac through Electron. MacBreak is the native option: about 1,200 lines of Swift and AppKit, using around 10 MB of memory while it waits.</p>
-    <p class="lede" style="margin-bottom:0"><a href="/safe-eyes-for-mac">See how Safe Eyes, Stretchly, BreakTimer, LookAway and Time Out compare on macOS →</a></p>
+    <h2 class="reveal">Built different</h2>
+    <p class="lede reveal">~1,400 lines of Swift. No Electron, no runtime, no dependencies. About 10 MB of memory while it waits.</p>
+    <div class="features">
+      <div class="feat reveal"><b>Every display, every Space</b><span>Covers all monitors, above full-screen apps. Re-takes focus if another app grabs it.</span></div>
+      <div class="feat reveal reveal-d1"><b>No way to end it early</b><span>No Done button. The dial drains for the whole rest. The rest is the point.</span></div>
+      <div class="feat reveal reveal-d2"><b>Screen lock = a break</b><span>Locked for 5+ minutes? Both clocks restart. No eye break 30 seconds after you sit down.</span></div>
+      <div class="feat reveal reveal-d3"><b>Menu bar, not Dock</b><span>One quiet icon. A countdown appears only when a break is close. No attention tax.</span></div>
+      <div class="feat reveal"><b>Snooze &amp; pause</b><span>Snooze defers one break. Pause stops everything until you resume.</span></div>
+      <div class="feat reveal reveal-d1"><b>No account, no telemetry</b><span>Zero network code. Nothing leaves your machine, ever. You can read every line.</span></div>
+    </div>
   </div>
 </section>
 
-<section id="install">
+<!-- Comparison -->
+<section class="section-border">
   <div class="wrap">
-    <h2>Install</h2>
-    <p class="lede">Two ways in. Both take about a minute.</p>
+    <h2 class="reveal">Coming from Safe Eyes or Stretchly?</h2>
+    <p class="lede reveal">Safe Eyes only runs on Linux. Stretchly and BreakTimer run on Mac through Electron. MacBreak is the native option.<br>
+    <a href="/safe-eyes-for-mac">See how they compare on macOS &rarr;</a></p>
+  </div>
+</section>
 
-    <div class="step">Homebrew</div>
-<pre><span class="p">brew</span> install --cask deepakk33/tap/macbreak
+<!-- Install -->
+<section id="install" class="section-border">
+  <div class="wrap">
+    <h2 class="reveal">Install</h2>
+    <p class="lede reveal">Two ways in. Both take about a minute.</p>
+
+    <div class="step-label reveal">Homebrew</div>
+<pre class="reveal"><span class="p">brew</span> install --cask deepakk33/tap/macbreak
 <span class="p">open</span> -a MacBreak   <span class="c"># then tick "Start at login"</span></pre>
 
-    <div class="step">Or build from source</div>
-<pre><span class="p">curl</span> -fsSL https://raw.githubusercontent.com/deepakk33/macbreak/main/scripts/bootstrap.sh | bash</pre>
-    <p class="sub">Compiles on your machine, so there's no Gatekeeper prompt and nothing to trust that you can't read first. Needs <code>xcode-select --install</code> — not the full Xcode.</p>
-
-    <div class="step">Then</div>
-    <p class="lede" style="margin-bottom:0">Press <b>Cmd-Space</b>, type <b>macbreak</b>, and set your intervals. Seven of them: how often each break comes, how long each lasts, snooze length, how long a screen lock counts as rest, and when the menu bar is allowed to start counting.</p>
+    <div class="step-label reveal">Or build from source</div>
+<pre class="reveal"><span class="p">curl</span> -fsSL https://raw.githubusercontent.com/deepakk33/macbreak/main/scripts/bootstrap.sh | bash</pre>
+    <p class="reveal" style="color:var(--faint);font-size:14px;margin-top:8px">Compiles on your machine &mdash; no Gatekeeper prompt. Needs <code>xcode-select --install</code>, not the full Xcode.</p>
   </div>
 </section>
 
-<section id="faq">
+<!-- FAQ -->
+<section id="faq" class="section-border">
   <div class="wrap">
-    <h2>Questions</h2>
+    <h2 class="reveal">Questions</h2>
+    <div class="reveal">
     <details><summary>Does it work with multiple monitors?</summary>
       <p>Yes. Every display is covered, each with its own countdown and buttons.</p></details>
     <details><summary>Is MacBreak free?</summary>
-      <p>Yes. It is free and open source under the MIT licence, with no paid tier, no account and no ads.</p></details>
-    <details><summary>Does it work on Intel Macs and older macOS?</summary>
-      <p>Yes. Every build is universal — Apple Silicon and Intel — and runs on macOS 13 Ventura or later.</p></details>
+      <p>Yes. Free and open source under the MIT licence. No paid tier, no account, no ads.</p></details>
+    <details><summary>Does it work on Intel Macs?</summary>
+      <p>Yes. Every build is universal &mdash; Apple Silicon and Intel &mdash; and runs on macOS 13 Ventura or later.</p></details>
     <details><summary>Is there a version of Safe Eyes for Mac?</summary>
-      <p>Not officially: Safe Eyes is built for Linux. MacBreak covers the same ground natively on macOS — full-screen eye breaks, longer movement breaks, and breaks that can't be dismissed early. <a href="/safe-eyes-for-mac">Read the comparison</a>.</p></details>
-    <details><summary>How do I follow the 20-20-20 rule on a Mac?</summary>
-      <p>Install MacBreak, open Preferences, and set "Look away every" to 20 minutes and "Look away for" to 20 seconds. Every 20 minutes the screen asks you to look at something at least 20 feet away. <a href="/20-20-20-rule-mac">More on the rule</a>.</p></details>
+      <p>Not officially. MacBreak covers the same ground natively. <a href="/safe-eyes-for-mac">Read the comparison</a>.</p></details>
+    <details><summary>How do I follow the 20-20-20 rule?</summary>
+      <p>Set "Look away every" to 20 min and "Look away for" to 20 sec in Preferences. <a href="/20-20-20-rule-mac">More on the rule</a>.</p></details>
     <details><summary>Does it phone home?</summary>
-      <p>No. There is no network code in the repository — you can check. No account, no analytics, nothing leaves your machine.</p></details>
-    <details><summary>Is it code-signed?</summary>
-      <p>Not yet. The Homebrew cask clears the download quarantine for you. Building from source sidesteps the question entirely.</p></details>
+      <p>No. Zero network code. Nothing leaves your machine.</p></details>
     <details><summary>How do water reminders work?</summary>
-      <p>Off by default. Enable "Remind me to drink water" in Preferences, set the interval (default 45 min), and MacBreak shows a 15-second overlay with "Yes, drinking!" and "Skip" buttons. If you drink, the next reminder uses the full interval. If you skip or ignore it, the next one comes sooner. All data stays on your machine — the Preferences panel shows today's drinks and a weekly suggestion.</p></details>
-    <details><summary>Can I use it for eyes only?</summary>
-      <p>Set the walk interval very high in Preferences, and it effectively disappears.</p></details>
+      <p>Off by default. Enable in Preferences, and every 45 min (configurable) a 15-second overlay asks "drink or skip?" Drink resets the full timer; skip brings the next one sooner. All data stays local with weekly suggestions.</p></details>
     <details><summary>What if I'm in a meeting?</summary>
-      <p>Snooze, or Pause from the menu bar. Pause clears both clocks until you resume.</p></details>
-    <details><summary>How do I get rid of it?</summary>
-      <p><code>brew uninstall --cask macbreak</code>, or <code>make uninstall</code> from the source checkout. Both stop it and remove the login agent.</p></details>
+      <p>Snooze, or Pause from the menu bar. Pause stops all clocks until you resume.</p></details>
+    <details><summary>How do I uninstall?</summary>
+      <p><code>brew uninstall --cask macbreak</code> or <code>make uninstall</code> from source. Both stop it and remove the login agent.</p></details>
     <details><summary>Why not Electron?</summary>
-      <p>A break reminder that idles at 200 MB is its own kind of problem. This is AppKit — about 1,200 lines of Swift, around 10 MB of memory, no dependencies, no runtime.</p></details>
+      <p>A break reminder at 200 MB is its own problem. This is AppKit &mdash; ~1,400 lines of Swift, ~10 MB of memory, zero dependencies.</p></details>
+    </div>
   </div>
 </section>
 
-</main>
+</div><!-- .content -->
 
 <footer>
   <div class="wrap">
     <nav aria-label="Site">
       <a href="/">MacBreak</a>
-      <a href="/20-20-20-rule-mac">The 20-20-20 rule on Mac</a>
+      <a href="/20-20-20-rule-mac">The 20-20-20 rule</a>
       <a href="/safe-eyes-for-mac">Safe Eyes for Mac</a>
       <a href="https://github.com/deepakk33/macbreak/releases">Releases</a>
     </nav>
-    <p>MIT licensed · <a href="https://github.com/deepakk33/macbreak">github.com/deepakk33/macbreak</a></p>
-    <p style="margin-top:6px">Now go look at something far away.</p>
+    <p>MIT licensed &middot; <a href="https://github.com/deepakk33/macbreak">github.com/deepakk33/macbreak</a></p>
+    <p style="margin-top:8px;opacity:.6">Now go look at something far away.</p>
   </div>
 </footer>
+
+<!-- Break demo overlay -->
+<div class="break-demo" id="break-demo">
+  <div class="backdrop"></div>
+  <div class="demo-content">
+    <div class="demo-heading" id="demo-heading">Rest your eyes</div>
+    <div class="demo-prompt" id="demo-prompt">Look at something 20 metres away</div>
+    <div class="demo-ring-wrap">
+      <svg class="demo-ring" viewBox="0 0 260 260">
+        <circle cx="130" cy="130" r="116" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3"/>
+        <circle cx="130" cy="130" r="116" fill="none" stroke-width="3" stroke-linecap="round"
+                id="demo-ring-progress" transform="rotate(-90 130 130)"
+                stroke-dasharray="729.1" stroke-dashoffset="0"
+                style="transition:stroke-dashoffset 1s linear"/>
+      </svg>
+      <div class="demo-time" id="demo-time">0:10</div>
+    </div>
+    <div class="demo-hint" id="demo-hint">Unclench your jaw &middot; Drop your shoulders &middot; Breathe out slowly</div>
+    <button class="demo-btn" id="demo-close" type="button">Snooze</button>
+  </div>
+</div>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.module.js';
+
+const canvas = document.getElementById('scene');
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if (!prefersReduced && canvas) {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 120);
+  camera.position.z = 35;
+
+  scene.add(new THREE.AmbientLight(0x111122, 0.8));
+  const l1 = new THREE.PointLight(0x8fcfbd, 1.5, 60); l1.position.set(15, 12, 10); scene.add(l1);
+  const l2 = new THREE.PointLight(0xe8c28c, 1.2, 60); l2.position.set(-12, -8, 8); scene.add(l2);
+  const l3 = new THREE.PointLight(0x72b8f4, 1.0, 60); l3.position.set(0, -15, 15); scene.add(l3);
+
+  const geos = [
+    new THREE.IcosahedronGeometry(1, 0),
+    new THREE.OctahedronGeometry(1, 0),
+    new THREE.TetrahedronGeometry(1, 0),
+    new THREE.DodecahedronGeometry(1, 0),
+    new THREE.TorusGeometry(1, 0.35, 8, 16),
+  ];
+  const colors = [0x8fcfbd, 0xe8c28c, 0x72b8f4];
+  const shapes = [];
+
+  for (let i = 0; i < 14; i++) {
+    const geo = geos[i % geos.length];
+    const wire = i % 3 !== 0;
+    const mat = new THREE.MeshStandardMaterial({
+      color: colors[i % 3],
+      wireframe: wire,
+      transparent: true,
+      opacity: wire ? 0.18 : 0.12,
+      emissive: colors[i % 3],
+      emissiveIntensity: 0.2,
+      roughness: 0.8,
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    const s = Math.random() * 2.2 + 0.6;
+    mesh.scale.set(s, s, s);
+    mesh.position.set(
+      (Math.random() - 0.5) * 50,
+      (Math.random() - 0.5) * 35,
+      (Math.random() - 0.5) * 25 - 5
+    );
+    mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+    mesh.userData = {
+      rx: (Math.random() - 0.5) * 0.008,
+      ry: (Math.random() - 0.5) * 0.006,
+      speed: Math.random() * 0.4 + 0.15,
+      offset: Math.random() * Math.PI * 2,
+      baseY: mesh.position.y,
+    };
+    scene.add(mesh);
+    shapes.push(mesh);
+  }
+
+  let mx = 0, my = 0;
+  document.addEventListener('mousemove', e => {
+    mx = (e.clientX / window.innerWidth - 0.5) * 2;
+    my = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  let heroVisible = true;
+  const hObs = new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; }, { threshold: 0 });
+  hObs.observe(document.querySelector('header'));
+
+  function tick() {
+    requestAnimationFrame(tick);
+    if (!heroVisible) return;
+    const t = performance.now() * 0.001;
+    for (const s of shapes) {
+      s.rotation.x += s.userData.rx;
+      s.rotation.y += s.userData.ry;
+      s.position.y = s.userData.baseY + Math.sin(t * s.userData.speed + s.userData.offset) * 2;
+    }
+    camera.position.x += (mx * 4 - camera.position.x) * 0.015;
+    camera.position.y += (-my * 3 - camera.position.y) * 0.015;
+    camera.lookAt(0, 0, 0);
+    renderer.render(scene, camera);
+  }
+  tick();
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+}
+
+// Scroll reveal
+const obs = new IntersectionObserver(entries => {
+  for (const e of entries) if (e.isIntersecting) e.target.classList.add('visible');
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// Counter animation
+const cObs = new IntersectionObserver(entries => {
+  for (const e of entries) {
+    if (!e.isIntersecting) continue;
+    const el = e.target;
+    const target = parseInt(el.dataset.target);
+    let cur = 0;
+    const step = Math.max(1, Math.ceil(target / 50));
+    const iv = setInterval(() => {
+      cur += step;
+      if (cur >= target) { el.textContent = target; clearInterval(iv); }
+      else el.textContent = cur;
+    }, 25);
+    cObs.unobserve(el);
+  }
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat-num').forEach(el => cObs.observe(el));
+
+// Break demo
+const types = [
+  { heading: 'Rest your eyes', prompt: 'Look at something 20 metres away', hint: 'Unclench your jaw · Drop your shoulders · Breathe out slowly', color: '#8fcfbd' },
+  { heading: 'Time for a walk', prompt: 'Step outside and look at the sky', hint: 'Move your legs · Loosen your neck · Get some air', color: '#e8c28c' },
+  { heading: 'Time for water', prompt: 'Grab your bottle and take a few sips', hint: 'Small sips beat big gulps · Room temperature absorbs faster', color: '#72b8f4' },
+];
+
+const overlay = document.getElementById('break-demo');
+const ring = document.getElementById('demo-ring-progress');
+const circumference = 2 * Math.PI * 116;
+let demoInterval = null;
+
+function startDemo() {
+  const type = types[Math.floor(Math.random() * types.length)];
+  document.getElementById('demo-heading').textContent = type.heading;
+  document.getElementById('demo-heading').style.color = type.color;
+  document.getElementById('demo-prompt').textContent = type.prompt;
+  document.getElementById('demo-hint').textContent = type.hint;
+  ring.setAttribute('stroke', type.color);
+  ring.style.strokeDashoffset = '0';
+
+  let remaining = 10;
+  document.getElementById('demo-time').textContent = '0:10';
+  overlay.classList.add('active');
+
+  demoInterval = setInterval(() => {
+    remaining--;
+    document.getElementById('demo-time').textContent = '0:' + String(remaining).padStart(2, '0');
+    ring.style.strokeDashoffset = String(circumference * (1 - remaining / 10));
+    if (remaining <= 0) closeDemo();
+  }, 1000);
+}
+
+function closeDemo() {
+  clearInterval(demoInterval);
+  overlay.classList.remove('active');
+}
+
+document.getElementById('try-btn').addEventListener('click', startDemo);
+document.getElementById('try-btn-2').addEventListener('click', startDemo);
+document.getElementById('demo-close').addEventListener('click', closeDemo);
+overlay.querySelector('.backdrop').addEventListener('click', closeDemo);
+</script>
 
 </body>
 </html>
