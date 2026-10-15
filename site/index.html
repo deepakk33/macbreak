@@ -70,9 +70,9 @@
    "applicationCategory": "HealthApplication",
    "applicationSubCategory": "Break reminder",
    "operatingSystem": "macOS 13 Ventura or later (Apple Silicon and Intel)",
-   "softwareVersion": "1.3.1",
+   "softwareVersion": "1.4.0",
    "datePublished": "2026-10-06",
-   "dateModified": "2026-10-09",
+   "dateModified": "2026-10-15",
    "downloadUrl": "https://github.com/deepakk33/macbreak/releases/latest",
    "installUrl": "https://macbreak.vercel.app/#install",
    "releaseNotes": "https://github.com/deepakk33/macbreak/releases",
@@ -98,7 +98,8 @@
     "Screen lock counts as a break",
     "Snooze and pause",
     "Menu bar app with no Dock icon",
-    "No account, no telemetry"
+    "No account, no telemetry",
+    "Optional water reminders with adaptive scheduling"
    ],
    "keywords": "eye break reminder, 20-20-20 rule, break timer for Mac, eye strain, RSI, Safe Eyes alternative, Stretchly alternative, menu bar app"
   },
@@ -160,6 +161,14 @@
      "acceptedAnswer": {
       "@type": "Answer",
       "text": "Not yet. The Homebrew cask clears the download quarantine for you. Building from source sidesteps the question entirely."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "How do water reminders work?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Off by default. Enable in Preferences and MacBreak shows a 15-second overlay every 45 minutes (configurable). Tap Yes to drink and reset the timer, or Skip to get reminded sooner. All data stays on your machine."
      }
     },
     {
@@ -244,7 +253,8 @@
   .card h3{margin:0 0 4px;font-size:19px}
   .card .when{color:var(--faint);font-size:14px;font-family:var(--mono);margin-bottom:12px}
   .card p{margin:0;color:var(--muted);font-size:15.5px}
-  .card.eye h3{color:var(--sage)} .card.walk h3{color:var(--sand)}
+  .card.eye h3{color:var(--sage)} .card.walk h3{color:var(--sand)} .card.water h3{color:#72b8f4}
+  .card.water{grid-column:1/-1}
 
   /* screenshots */
   .shot{margin:0 0 26px}
@@ -314,8 +324,8 @@
 
 <section id="breaks">
   <div class="wrap">
-    <h2>Two breaks, because eyes and legs want different things</h2>
-    <p class="lede">Eye strain comes from hours of fixed focus. Stiffness comes from hours of not moving. One timer can't fix both, so MacBreak runs two.</p>
+    <h2>Two breaks and an optional nudge</h2>
+    <p class="lede">Eye strain comes from hours of fixed focus. Stiffness comes from hours of not moving. One timer can't fix both, so MacBreak runs two — and can remind you to drink water too.</p>
     <div class="cards">
       <div class="card eye">
         <div class="k">👁️</div>
@@ -328,6 +338,12 @@
         <h3>Time for a walk</h3>
         <div class="when">every 2 hours · 10 minutes</div>
         <p>Long enough to actually leave the chair. Take a lap, refill your water the long way, go look at the sky. Finishing one resets the eye clock too.</p>
+      </div>
+      <div class="card water">
+        <div class="k">💧</div>
+        <h3>Drink water?</h3>
+        <div class="when">optional · every 45 min · skippable</div>
+        <p>Turn it on in Preferences and MacBreak asks if you'd like a sip. Say yes and the next reminder waits the full interval. Skip, and it nudges you again sooner. Your drink and skip history stays on your machine — the Preferences panel shows today's count and a weekly suggestion.</p>
       </div>
     </div>
   </div>
@@ -418,6 +434,8 @@
       <p>No. There is no network code in the repository — you can check. No account, no analytics, nothing leaves your machine.</p></details>
     <details><summary>Is it code-signed?</summary>
       <p>Not yet. The Homebrew cask clears the download quarantine for you. Building from source sidesteps the question entirely.</p></details>
+    <details><summary>How do water reminders work?</summary>
+      <p>Off by default. Enable "Remind me to drink water" in Preferences, set the interval (default 45 min), and MacBreak shows a 15-second overlay with "Yes, drinking!" and "Skip" buttons. If you drink, the next reminder uses the full interval. If you skip or ignore it, the next one comes sooner. All data stays on your machine — the Preferences panel shows today's drinks and a weekly suggestion.</p></details>
     <details><summary>Can I use it for eyes only?</summary>
       <p>Set the walk interval very high in Preferences, and it effectively disappears.</p></details>
     <details><summary>What if I'm in a meeting?</summary>
