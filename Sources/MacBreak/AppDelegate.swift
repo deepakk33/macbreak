@@ -5,6 +5,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     // Schedule
     private var lookAwayDue: Date?
     private var walkDue: Date?
+    private var waterDue: Date?
     private var isPaused = false
 
     // Active break
@@ -34,6 +35,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private var prefsWindow: NSWindow?
     private var fields: [String: NSTextField] = [:]
     private var loginCheckbox: NSButton?
+    private var waterCheckbox: NSButton?
+    private var waterStatsLabel: NSTextField?
+
+    // Water menu
+    private var waterItem: NSMenuItem!
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -79,6 +85,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private func resetAllSchedules() {
         lookAwayDue = Date().addingTimeInterval(Prefs.lookAwayInterval)
         walkDue = Date().addingTimeInterval(Prefs.walkInterval)
+        waterDue = Prefs.waterReminderEnabled ? Date().addingTimeInterval(Prefs.waterInterval) : nil
     }
 
     private func rescheduleLookAway(after seconds: TimeInterval) {
@@ -87,6 +94,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
     private func rescheduleWalk(after seconds: TimeInterval) {
         walkDue = Date().addingTimeInterval(seconds)
+    }
+
+    private func rescheduleWater(after seconds: TimeInterval) {
+        guard Prefs.waterReminderEnabled else { waterDue = nil; return }
+        waterDue = Date().addingTimeInterval(seconds)
     }
 
     /// A single 1 Hz tick drives both schedules, the countdown and the menu bar.
@@ -109,10 +121,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         } else if !isPaused {
             // A walk supersedes a look-away when both come due together: the
             // walk is the longer rest and resets the look-away anyway.
+            // Water is the lightest nudge, so it yields to both.
             if let due = walkDue, now >= due {
                 beginBreak(.walk)
             } else if let due = lookAwayDue, now >= due {
                 beginBreak(.lookAway)
+            } else if let due = waterDue, now >= due {
+                beginBreak(.water)
             }
         }
 
@@ -141,7 +156,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
 
         // The user has already been away from the screen for long enough to
         // count as a break, so both clocks start over.
-        log("screen was locked for \(Int(away))s - resetting both schedules")
+        log("screen was locked for \(Int(away))s - resetting all schedules")
         if activeKind != nil { closeOverlay() }
         isPaused = false
         pauseItem.title = "Pause"
@@ -170,6 +185,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         walkItem = NSMenuItem(title: "Walk in --:--", action: nil, keyEquivalent: "")
         walkItem.isEnabled = false
         menu.addItem(walkItem)
+
+        waterItem = NSMenuItem(title: "Water in --:--", action: nil, keyEquivalent: "")
+        waterItem.isEnabled = false
+        waterItem.isHidden = !Prefs.waterReminderEnabled
+        menu.addItem(waterItem)
         menu.addItem(.separator())
 
         menu.addItem(NSMenuItem(title: "Look Away Now", action: #selector(lookAwayNow), keyEquivalent: ""))
@@ -192,8 +212,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         if let kind = activeKind, let endsAt = breakEndsAt {
             let remaining = self.remaining(until: endsAt, now: now)
             showStatus(symbol: kind.symbolName, timer: Clock.format(remaining))
-            lookAwayItem.title = kind == .walk ? "Walk break in progress" : "Look-away break in progress"
-            walkItem.title = "Resting for \(Clock.format(remaining))"
+            switch kind {
+            case .walk:     lookAwayItem.title = "Walk break in progress"
+            case .lookAway: lookAwayItem.title = "Look-away break in progress"
+            case .water:    lookAwayItem.title = "Water reminder in progress"
+            }
+            walkItem.title = kind == .water
+                ? "Dismisses in \(Clock.format(remaining))"
+                : "Resting for \(Clock.format(remaining))"
             return
         }
 
@@ -201,6 +227,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             showStatus(symbol: "pause.circle.fill", timer: nil)
             lookAwayItem.title = "Paused"
             walkItem.title = "Paused"
+            waterItem.isHidden = true
             return
         }
 
@@ -208,6 +235,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let walkLeft = remaining(until: walkDue, now: now)
         lookAwayItem.title = "Look away in \(Clock.format(lookAwayLeft))"
         walkItem.title = "Walk in \(Clock.format(walkLeft))"
+
+        if Prefs.waterReminderEnabled, let due = waterDue {
+            let waterLeft = remaining(until: due, now: now)
+            waterItem.title = "Water in \(Clock.format(waterLeft))"
+            waterItem.isHidden = false
+        } else {
+            waterItem.isHidden = true
+        }
 
         // Whichever break lands first decides both the icon and whether we speak up.
         let next: BreakKind = walkLeft < lookAwayLeft ? .walk : .lookAway
@@ -248,6 +283,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         if isPaused {
             lookAwayDue = nil
             walkDue = nil
+            waterDue = nil
             pauseItem.title = "Resume"
         } else {
             pauseItem.title = "Pause"
@@ -272,7 +308,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         let endsAt = Date().addingTimeInterval(kind.duration)
         activeKind = kind
         breakEndsAt = endsAt
-        log("break started: \(kind == .walk ? "walk" : "look-away")")
+        log("break started: \(kind == .walk ? "walk" : kind == .lookAway ? "look-away" : "water")")
 
         let prompt = kind.prompts.randomElement() ?? kind.prompts[0]
 
@@ -339,14 +375,45 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     /// The rest is over, so the screen goes back on its own: nobody should have
     /// to click to be allowed to work again.
     private func finishBreak() {
-        // Completing a walk counts as a look-away too, so both clocks restart.
         guard let finished = activeKind else { return }
-        log("break finished: \(finished == .walk ? "walk" : "look-away")")
+        log("break finished: \(finished == .walk ? "walk" : finished == .lookAway ? "look-away" : "water")")
         closeOverlay()
-        rescheduleLookAway(after: Prefs.lookAwayInterval)
-        if finished == .walk {
+
+        switch finished {
+        case .water:
+            WaterLog.record(.skip)
+            rescheduleWater(after: max(600, Prefs.waterInterval * 0.6))
+        case .lookAway:
+            rescheduleLookAway(after: Prefs.lookAwayInterval)
+        case .walk:
+            // Completing a walk counts as a look-away too, so both clocks restart.
+            rescheduleLookAway(after: Prefs.lookAwayInterval)
             rescheduleWalk(after: Prefs.walkInterval)
         }
+
+        // Don't nag about water right after another break just ended.
+        if finished != .water, let due = waterDue, due <= Date() {
+            waterDue = Date().addingTimeInterval(300)
+        }
+
+        refreshStatus(now: Date())
+    }
+
+    @objc private func waterDrinkTapped() {
+        guard activeKind == .water else { return }
+        log("water: drink")
+        WaterLog.record(.drink)
+        closeOverlay()
+        rescheduleWater(after: Prefs.waterInterval)
+        refreshStatus(now: Date())
+    }
+
+    @objc private func waterSkipTapped() {
+        guard activeKind == .water else { return }
+        log("water: skip")
+        WaterLog.record(.skip)
+        closeOverlay()
+        rescheduleWater(after: max(600, Prefs.waterInterval * 0.6))
         refreshStatus(now: Date())
     }
 
@@ -467,12 +534,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         gauge.addSubview(countdown)
         gauge.run(total: kind.duration, endsAt: endsAt)
 
-        let snooze = makeFlatButton(action: #selector(snoozeTapped), background: OverlayPalette.snooze)
-        style(snooze, title: "Snooze \(Prefs.snoozeMinutes) min")
-        snooze.frame = NSRect(origin: NSPoint(x: frame.midX - buttonSize.width / 2,
-                                              y: hint.frame.minY - 40 - buttonSize.height),
-                              size: buttonSize)
-        root.addSubview(snooze)
+        let buttonY = hint.frame.minY - 40 - buttonSize.height
+
+        if kind == .water {
+            let bw: CGFloat = 160
+            let gap: CGFloat = 16
+
+            let skip = makeFlatButton(action: #selector(waterSkipTapped), background: OverlayPalette.snooze)
+            style(skip, title: "Skip")
+            skip.frame = NSRect(x: frame.midX - bw - gap / 2, y: buttonY, width: bw, height: buttonSize.height)
+            root.addSubview(skip)
+
+            let drink = makeFlatButton(action: #selector(waterDrinkTapped),
+                                       background: kind.accent.withAlphaComponent(0.35))
+            style(drink, title: "Yes, drinking!")
+            drink.frame = NSRect(x: frame.midX + gap / 2, y: buttonY, width: bw, height: buttonSize.height)
+            root.addSubview(drink)
+        } else {
+            let snooze = makeFlatButton(action: #selector(snoozeTapped), background: OverlayPalette.snooze)
+            style(snooze, title: "Snooze \(Prefs.snoozeMinutes) min")
+            snooze.frame = NSRect(origin: NSPoint(x: frame.midX - buttonSize.width / 2, y: buttonY),
+                                  size: buttonSize)
+            root.addSubview(snooze)
+        }
 
         overlayChrome.append(OverlayChrome(countdown: countdown, gauge: gauge))
         return root
@@ -523,7 +607,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         }
 
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 420, height: 352),
+            contentRect: NSRect(x: 0, y: 0, width: 420, height: 470),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
@@ -545,8 +629,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     }
 
     private func makePrefsView() -> NSView {
-        let root = NSView(frame: NSRect(x: 0, y: 0, width: 420, height: 352))
-        var y: CGFloat = 304
+        let root = NSView(frame: NSRect(x: 0, y: 0, width: 420, height: 470))
+        var y: CGFloat = 422
 
         func addRow(key: String, label: String, unit: String) {
             let caption = NSTextField(labelWithString: label)
@@ -573,12 +657,36 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         addRow(key: "lockReset", label: "Screen lock resets after", unit: "min")
         addRow(key: "statusTimer", label: "Show menu bar timer under", unit: "min")
 
+        // ── Water section ──
+        y -= 6
+        let separator = NSBox(frame: NSRect(x: 24, y: y, width: 372, height: 1))
+        separator.boxType = .separator
+        root.addSubview(separator)
+        y -= 10
+
+        let wCheck = NSButton(checkboxWithTitle: "Remind me to drink water", target: nil, action: nil)
+        wCheck.frame = NSRect(x: 24, y: y, width: 260, height: 22)
+        root.addSubview(wCheck)
+        waterCheckbox = wCheck
+        y -= 30
+
+        addRow(key: "waterInterval", label: "Water reminder every", unit: "min")
+
+        let stats = NSTextField(labelWithString: "")
+        stats.font = NSFont.systemFont(ofSize: 11)
+        stats.textColor = .secondaryLabelColor
+        stats.frame = NSRect(x: 24, y: y, width: 370, height: 16)
+        root.addSubview(stats)
+        waterStatsLabel = stats
+        y -= 24
+
+        // ── Login + save ──
         let checkbox = NSButton(checkboxWithTitle: "Start at login", target: nil, action: nil)
-        checkbox.frame = NSRect(x: 24, y: y - 4, width: 200, height: 22)
+        checkbox.frame = NSRect(x: 24, y: y, width: 200, height: 22)
         root.addSubview(checkbox)
         loginCheckbox = checkbox
 
-        let note = NSTextField(labelWithString: "Saving restarts both countdowns.")
+        let note = NSTextField(labelWithString: "Saving restarts all countdowns.")
         note.font = NSFont.systemFont(ofSize: 11)
         note.textColor = .secondaryLabelColor
         note.frame = NSRect(x: 24, y: 26, width: 240, height: 18)
@@ -601,7 +709,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         fields["snooze"]?.stringValue = String(Prefs.snoozeMinutes)
         fields["lockReset"]?.stringValue = String(Prefs.lockResetMinutes)
         fields["statusTimer"]?.stringValue = String(Prefs.statusTimerMinutes)
+        waterCheckbox?.state = Prefs.waterReminderEnabled ? .on : .off
+        fields["waterInterval"]?.stringValue = String(Prefs.waterIntervalMinutes)
         loginCheckbox?.state = LaunchAgent.isInstalled ? .on : .off
+        refreshWaterStats()
+    }
+
+    private func refreshWaterStats() {
+        guard Prefs.waterReminderEnabled else {
+            waterStatsLabel?.stringValue = ""
+            return
+        }
+        let (drinks, skips) = WaterLog.todayStats()
+        var text = "Today: \(drinks) drink\(drinks == 1 ? "" : "s"), \(skips) skipped"
+        if let suggestion = WaterLog.suggestion(currentInterval: Prefs.waterIntervalMinutes) {
+            text += "  ·  \(suggestion)"
+        }
+        waterStatsLabel?.stringValue = text
     }
 
     @objc private func savePreferences() {
@@ -618,6 +742,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         if let v = value("lockReset") { Prefs.lockResetMinutes = v }
         if let v = value("statusTimer") { Prefs.statusTimerMinutes = v }
 
+        Prefs.waterReminderEnabled = waterCheckbox?.state == .on
+        if let v = value("waterInterval") { Prefs.waterIntervalMinutes = v }
+
+        // Dismiss a water overlay if the feature was just turned off.
+        if !Prefs.waterReminderEnabled && activeKind == .water {
+            closeOverlay()
+        }
+
         let wantsLogin = loginCheckbox?.state == .on
         if wantsLogin && !LaunchAgent.isInstalled {
             LaunchAgent.install()
@@ -625,6 +757,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
             LaunchAgent.uninstall()
         }
 
+        waterItem.isHidden = !Prefs.waterReminderEnabled
         loadPrefsIntoFields()
         if !isPaused && activeKind == nil { resetAllSchedules() }
         refreshStatus(now: Date())

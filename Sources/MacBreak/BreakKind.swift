@@ -3,11 +3,13 @@ import Cocoa
 enum BreakKind {
     case lookAway
     case walk
+    case water
 
     var heading: String {
         switch self {
         case .lookAway: return "Rest your eyes"
         case .walk:     return "Time for a walk"
+        case .water:    return "Time for water"
         }
     }
 
@@ -38,6 +40,17 @@ enum BreakKind {
                 "Put your feet on the floor and move them",
                 "Stretch your back, then take the long route somewhere"
             ]
+        case .water:
+            return [
+                "Your body runs on water — top it up",
+                "A sip now keeps you sharp later",
+                "Hydration check — how's your glass?",
+                "Water break — your brain will thank you",
+                "Grab your bottle and take a few sips",
+                "Even mild dehydration dulls focus",
+                "A glass of water, a clearer mind",
+                "Time to refill? Drink up first"
+            ]
         }
     }
 
@@ -45,6 +58,7 @@ enum BreakKind {
         switch self {
         case .lookAway: return "Unclench your jaw  ·  Drop your shoulders  ·  Breathe out slowly"
         case .walk:     return "Move your legs  ·  Loosen your neck  ·  Get some air"
+        case .water:    return "Small sips beat big gulps  ·  Room temperature absorbs faster"
         }
     }
 
@@ -53,6 +67,7 @@ enum BreakKind {
         switch self {
         case .lookAway: return NSColor(calibratedRed: 0.56, green: 0.81, blue: 0.74, alpha: 1.0)
         case .walk:     return NSColor(calibratedRed: 0.91, green: 0.76, blue: 0.55, alpha: 1.0)
+        case .water:    return NSColor(calibratedRed: 0.45, green: 0.72, blue: 0.96, alpha: 1.0)
         }
     }
 
@@ -72,6 +87,12 @@ enum BreakKind {
                 NSColor(calibratedRed: 0.78, green: 0.82, blue: 0.58, alpha: 1.0),
                 NSColor(calibratedRed: 0.55, green: 0.80, blue: 0.64, alpha: 1.0)
             ]
+        case .water:
+            return [
+                NSColor(calibratedRed: 0.45, green: 0.75, blue: 0.98, alpha: 1.0),
+                NSColor(calibratedRed: 0.35, green: 0.60, blue: 0.92, alpha: 1.0),
+                NSColor(calibratedRed: 0.40, green: 0.50, blue: 0.85, alpha: 1.0)
+            ]
         }
     }
 
@@ -81,6 +102,7 @@ enum BreakKind {
         switch self {
         case .lookAway: return "eye.fill"
         case .walk:     return "figure.walk"
+        case .water:    return "drop.fill"
         }
     }
 
@@ -89,6 +111,7 @@ enum BreakKind {
         switch self {
         case .lookAway: return Prefs.lookAwayDuration
         case .walk:     return Prefs.walkDuration
+        case .water:    return 15
         }
     }
 }

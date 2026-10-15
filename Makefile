@@ -20,6 +20,10 @@ demo-eye: build
 demo-walk: build
 	@MACBREAK_WALK_SECONDS=6 MACBREAK_DURATION_SECONDS=5 ./build/MacBreak
 
+## Show a water overlay after 4s (needs water enabled: pass -macbreak.waterReminderEnabled 1)
+demo-water: build
+	@MACBREAK_WATER_SECONDS=4 MACBREAK_BREAK_SECONDS=999 MACBREAK_WALK_SECONDS=999 ./build/MacBreak -macbreak.waterReminderEnabled 1
+
 ## Validate the OpenSpec specifications
 spec:
 	@openspec validate --all

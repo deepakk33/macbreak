@@ -17,6 +17,7 @@ enum Defaults {
     static let snoozeMinutes = 10
     static let lockResetMinutes = 5
     static let statusTimerMinutes = 5
+    static let waterIntervalMinutes = 45
 }
 
 /// Thin UserDefaults wrapper. Human units on the surface, seconds for the timers.
@@ -29,6 +30,8 @@ enum Prefs {
     private static let lockResetKey = "macbreak.lockResetMinutes"
     private static let statusTimerKey = "macbreak.statusTimerMinutes"
     private static let startAtLoginKey = "macbreak.startAtLogin"
+    private static let waterEnabledKey = "macbreak.waterReminderEnabled"
+    private static let waterIntervalKey = "macbreak.waterIntervalMinutes"
 
     private static func read(_ key: String, fallback: Int) -> Int {
         let stored = UserDefaults.standard.integer(forKey: key)
@@ -82,6 +85,16 @@ enum Prefs {
         set { UserDefaults.standard.set(newValue, forKey: startAtLoginKey) }
     }
 
+    static var waterReminderEnabled: Bool {
+        get { UserDefaults.standard.bool(forKey: waterEnabledKey) }
+        set { UserDefaults.standard.set(newValue, forKey: waterEnabledKey) }
+    }
+
+    static var waterIntervalMinutes: Int {
+        get { read(waterIntervalKey, fallback: Defaults.waterIntervalMinutes) }
+        set { write(waterIntervalKey, newValue) }
+    }
+
     /// Testing hooks, so the overlays can be demonstrated without waiting.
     private static func envSeconds(_ name: String) -> TimeInterval? {
         guard let raw = ProcessInfo.processInfo.environment[name],
@@ -115,5 +128,9 @@ enum Prefs {
 
     static var statusTimerThreshold: TimeInterval {
         envSeconds("MACBREAK_STATUS_TIMER_SECONDS") ?? TimeInterval(statusTimerMinutes * 60)
+    }
+
+    static var waterInterval: TimeInterval {
+        envSeconds("MACBREAK_WATER_SECONDS") ?? TimeInterval(waterIntervalMinutes * 60)
     }
 }
